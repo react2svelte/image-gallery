@@ -1,8 +1,9 @@
 <script lang="ts">
   import '../app.scss';
   import clsx from 'clsx';
-  import type { TItem } from '$lib/types';
+  import type { Position, TItem } from '$lib/types';
   import SlideWrapper from '$lib/SlideWrapper.svelte';
+  import ThumbnailWrapper from '$lib/ThumbnailWrapper.svelte';
 
   export let flickThreshold: number = 0.4;
   export let items: TItem[];
@@ -22,7 +23,7 @@
   export let useBrowserFullscreen: boolean = true;
   export let onErrorImageURL: string = '';
   export let indexSeparator: string = '/';
-  export let thumbnailPosition: 'top' | 'bottom' | 'left' | 'right' = 'bottom';
+  export let thumbnailPosition: Position = 'bottom';
   export let startIndex: number = 0;
   export let slideDuration: number = 450;
   export let slideInterval: number = 3000;
@@ -176,6 +177,21 @@ Current index: {currentIndex}
         slideToIndex(event.detail);
       }}
     />
+    {#if showThumbnails}
+      <ThumbnailWrapper
+        {items}
+        {currentIndex}
+        {useTranslate3D}
+        {isRTL}
+        {thumbnailPosition}
+        {thumbsTranslate}
+        {thumbsStyle}
+        {slideOnThumbnailOver}
+        on:slidejump={(event) => {
+          slideToIndex(event.detail);
+        }}
+      />
+    {/if}
   </div>
 </div>
 

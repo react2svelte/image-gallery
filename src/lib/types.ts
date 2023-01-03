@@ -1,3 +1,5 @@
+export type Position = 'top' | 'bottom' | 'left' | 'right';
+
 export type TImage = {
   srcSet: string;
   media: string;
