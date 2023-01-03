@@ -1,9 +1,21 @@
 <script lang="ts">
-  import Svg from '$lib/SVG.svelte';
+  import ImageGallery from '$lib/ImageGallery.svelte';
+
+  const PREFIX_URL = 'https://raw.githubusercontent.com/xiaolin/react-image-gallery/master/static/';
+
+  function _getStaticImages() {
+    let images = [];
+    for (let i = 2; i < 12; i++) {
+      images.push({
+        original: `${PREFIX_URL}${i}.jpg`,
+        thumbnail: `${PREFIX_URL}${i}t.jpg`
+      });
+    }
+
+    return images;
+  }
+
+  const images = _getStaticImages();
 </script>
 
-<h1>Welcome to your library project</h1>
-<p>Create your package using @sveltejs/package and preview/showcase your work with SvelteKit</p>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
-
-<Svg icon="play" />
+<ImageGallery items={images} />

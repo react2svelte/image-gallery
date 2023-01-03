@@ -2,6 +2,7 @@
   import '../app.scss';
   import clsx from 'clsx';
   import type { TItem } from '$lib/types';
+  import SlideWrapper from '$lib/SlideWrapper.svelte';
 
   export let flickThreshold: number = 0.4;
   export let items: TItem[];
@@ -82,3 +83,18 @@
     };
   }
 </script>
+
+<div class={''} aria-live="polite">
+  <div class={''}>
+    <SlideWrapper
+      slideWrapperClass=""
+      {items}
+      {showNav}
+      {showBullets}
+      {showIndex}
+      currentIndex={1}
+      {infinite}
+      {isRTL}
+    />
+  </div>
+</div>
