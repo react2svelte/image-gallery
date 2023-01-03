@@ -51,8 +51,18 @@
   export let isRTL: boolean = false;
   export let useWindowKeyDown: boolean;
 
+  let currentIndex = 1;
+  let previousIndex = 1;
+  let isFullscreen = false;
+
   let thumbsTranslate = 0;
   $: thumbsStyle = { transition: `all ${slideDuration}ms ease-out` };
+
+  $: canSlide = items.length >= 2;
+  $: canSlidePrevious = currentIndex > 0;
+  $: canSlideNext = currentIndex < items.length - 1;
+  $: canSlideLeft = infinite || (isRTL ? canSlideNext : canSlidePrevious);
+  $: canSlideRight = infinite || (isRTL ? canSlidePrevious : canSlideNext);
 
   function isThumbnailVertical() {
     return thumbnailPosition === 'left' || thumbnailPosition === 'right';
@@ -82,7 +92,71 @@
       ...thumbsStyle
     };
   }
+
+  function slideLeft() {
+    slideTo(isRTL ? 'right' : 'left');
+  }
+
+  function slideRight() {
+    slideTo(isRTL ? 'left' : 'right');
+  }
+
+  function slideTo(direction) {
+    const nextIndex = currentIndex + (direction === 'left' ? -1 : 1);
+    slideToIndex(nextIndex);
+  }
+
+  function slideToIndex(index) {
+    const slideCount = items.length - 1;
+    let nextIndex = index;
+    if (index < 0) {
+      nextIndex = slideCount;
+    } else if (index > slideCount) {
+      nextIndex = 0;
+    }
+
+    if (onBeforeSlide && nextIndex !== currentIndex) {
+      onBeforeSlide(nextIndex);
+    }
+
+    console.log('New currentIndex:', nextIndex);
+    previousIndex = currentIndex;
+    currentIndex = nextIndex;
+  }
+
+  function handleKeyDown(event) {
+    // keep track of mouse vs keyboard usage for a11y
+    // this.imageGallery.current.classList.remove('image-gallery-using-mouse');
+
+    if (disableKeyDown) return;
+    const LEFT_ARROW = 37;
+    const RIGHT_ARROW = 39;
+    const ESC_KEY = 27;
+    const key = parseInt(event.keyCode || event.which || 0, 10);
+
+    switch (key) {
+      case LEFT_ARROW:
+        if (canSlideLeft) {
+          slideLeft();
+        }
+        break;
+      case RIGHT_ARROW:
+        if (canSlideRight) {
+          slideRight();
+        }
+        break;
+      case ESC_KEY:
+        if (isFullscreen && !useBrowserFullscreen) {
+          // this.exitFullScreen();
+        }
+        break;
+      default:
+        break;
+    }
+  }
 </script>
+
+Current index: {currentIndex}
 
 <div class={''} aria-live="polite">
   <div class={''}>
@@ -92,9 +166,12 @@
       {showNav}
       {showBullets}
       {showIndex}
-      currentIndex={1}
+      {currentIndex}
+      {previousIndex}
       {infinite}
       {isRTL}
     />
   </div>
 </div>
+
+<svelte:window on:keydown={handleKeyDown} />

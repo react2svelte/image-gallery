@@ -10,6 +10,7 @@
   export let showNav: boolean;
   export let showBullets: boolean;
   export let showIndex: boolean;
+  export let previousIndex: number;
   export let currentIndex: number;
   export let infinite: boolean;
   export let isRTL: boolean;
@@ -58,9 +59,55 @@
     return alignment;
   }
 
-  function getSlideStyle(index) {
-    const { currentIndex, currentSlideOffset, slideStyle } = this.state;
-    const { infinite, items, useTranslate3D, isRTL } = this.props;
+  function slideIsTransitioning(index) {
+    const isTransitioning = false;
+    /*
+    returns true if the gallery is transitioning and the index is not the
+    previous or currentIndex
+    */
+    const indexIsNotPreviousOrNextSlide = !(index === previousIndex || index === currentIndex);
+    return isTransitioning && indexIsNotPreviousOrNextSlide;
+  }
+
+  function ignoreIsTransitioning() {
+    /*
+      Ignore isTransitioning because were not going to sibling slides
+      e.g. center to left or center to right
+    */
+    const totalSlides = items.length - 1;
+
+    // we want to show the in between slides transition
+    const slidingMoreThanOneSlideLeftOrRight = Math.abs(previousIndex - currentIndex) > 1;
+    const notGoingFromFirstToLast = !(previousIndex === 0 && currentIndex === totalSlides);
+    const notGoingFromLastToFirst = !(previousIndex === totalSlides && currentIndex === 0);
+
+    return slidingMoreThanOneSlideLeftOrRight && notGoingFromFirstToLast && notGoingFromLastToFirst;
+  }
+
+  function isFirstOrLastSlide(index) {
+    const totalSlides = items.length - 1;
+    const isLastSlide = index === totalSlides;
+    const isFirstSlide = index === 0;
+    return isLastSlide || isFirstSlide;
+  }
+
+  function isSlideVisible(index) {
+    /*
+      Show slide if slide is the current slide and the next slide
+      OR
+      The slide is going more than one slide left or right, but not going from
+      first to last and not going from last to first
+
+      Edge case:
+      If you go to the first or last slide, when they're
+      not left, or right of each other they will try to catch up in the background
+      so unless were going from first to last or vice versa we don't want the first
+      or last slide to show up during the transition
+    */
+    return !slideIsTransitioning(index) || (ignoreIsTransitioning() && !isFirstOrLastSlide(index));
+  }
+
+  $: getSlideStyle = (index) => {
     const baseTranslateX = -100 * currentIndex;
     const totalSlides = items.length - 1;
 
@@ -87,24 +134,28 @@
 
     let translate = `translate(${translateX}%, 0)`;
 
-    if (useTranslate3D) {
+    // if (useTranslate3D) {
+    // eslint-disable-next-line no-constant-condition
+    if (true) {
       translate = `translate3d(${translateX}%, 0, 0)`;
     }
 
     // don't show some slides while transitioning to avoid background transitions
-    const isVisible = this.isSlideVisible(index);
+    const isVisible = isSlideVisible(index);
 
-    return {
-      display: isVisible ? 'inherit' : 'none',
-      WebkitTransform: translate,
-      MozTransform: translate,
-      msTransform: translate,
-      OTransform: translate,
-      transform: translate,
-      ...slideStyle
-    };
-  }
+    return `
+      display: ${isVisible ? 'inherit' : 'none'};
+      WebkitTransform: ${translate};
+      MozTransform: ${translate};
+      msTransform: ${translate};
+      OTransform: ${translate};
+      transform: ${translate};
+      transition: all 450ms ease-out 0s;
+    `; // ...slideStyle;
+  };
 </script>
+
+Current index in SlideWrapper: {currentIndex}
 
 <div class={slideWrapperClass}>
   <!-- TODO: render custom controls -->
@@ -120,7 +171,7 @@
           {index}
           alignment={getAlignmentClassName(index)}
           originalClass={item.originalClass}
-          slideStyle=""
+          slideStyle={getSlideStyle(index)}
           showItem={true}
           {item}
           isFullscreen={false}
@@ -134,7 +185,7 @@
           {index}
           alignment={getAlignmentClassName(index)}
           originalClass={item.originalClass}
-          slideStyle=""
+          slideStyle={getSlideStyle(index)}
           showItem={true}
           {item}
           isFullscreen={false}
