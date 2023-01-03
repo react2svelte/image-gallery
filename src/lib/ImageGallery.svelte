@@ -1,10 +1,10 @@
 <script lang="ts">
   import '../app.scss';
   import clsx from 'clsx';
-  import type { Item } from '$lib/types';
+  import type { TItem } from '$lib/types';
 
   export let flickThreshold: number = 0.4;
-  export let items: Item[];
+  export let items: TItem[];
   export let showNav: boolean = true;
   export let autoPlay: boolean = false;
   export let lazyLoad: boolean = false;

@@ -1,11 +1,11 @@
-export type Image = {
+export type TImage = {
   srcSet: string;
   media: string;
 };
 
-export type ImageSet = Image[];
+export type TImageSet = TImage[];
 
-export type Item = {
+export type TItem = {
   bulletClass: string;
   bulletOnClick: Function;
   description: string;
@@ -26,7 +26,7 @@ export type Item = {
   originalClass: string;
   thumbnailClass: string;
   renderItem: Function;
-  imageSet: ImageSet[];
+  imageSet: TImageSet[];
   renderThumbInner: Function;
   srcSet: string;
   sizes: string;

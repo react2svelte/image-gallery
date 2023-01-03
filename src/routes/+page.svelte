@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Svg from "$lib/SVG.svelte";
+  import Svg from '$lib/SVG.svelte';
 </script>
 
 <h1>Welcome to your library project</h1>
