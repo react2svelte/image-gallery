@@ -57,6 +57,7 @@
   let isFullscreen = false;
 
   let thumbsTranslate = 0;
+  let thumbsSwipedTranslate = 0;
   $: thumbsStyle = { transition: `all ${slideDuration}ms ease-out` };
 
   $: canSlide = items.length >= 2;
@@ -67,31 +68,6 @@
 
   function isThumbnailVertical() {
     return thumbnailPosition === 'left' || thumbnailPosition === 'right';
-  }
-
-  function getThumbnailStyle() {
-    let translate;
-    const verticalTranslateValue = isRTL ? thumbsTranslate * -1 : thumbsTranslate;
-
-    if (isThumbnailVertical()) {
-      translate = `translate(0, ${thumbsTranslate}px)`;
-      if (useTranslate3D) {
-        translate = `translate3d(0, ${thumbsTranslate}px, 0)`;
-      }
-    } else {
-      translate = `translate(${verticalTranslateValue}px, 0)`;
-      if (useTranslate3D) {
-        translate = `translate3d(${verticalTranslateValue}px, 0, 0)`;
-      }
-    }
-    return {
-      WebkitTransform: translate,
-      MozTransform: translate,
-      msTransform: translate,
-      OTransform: translate,
-      transform: translate,
-      ...thumbsStyle
-    };
   }
 
   function slideLeft() {
@@ -120,9 +96,56 @@
       onBeforeSlide(nextIndex);
     }
 
-    console.log('New currentIndex:', nextIndex);
     previousIndex = currentIndex;
     currentIndex = nextIndex;
+    slideThumbnailBar();
+  }
+
+  function slideThumbnailBar() {
+    const nextTranslate = -getThumbsTranslate(currentIndex);
+    // if (isSwipingThumbnail) {
+    //   return;
+    // }
+
+    if (currentIndex === 0) {
+      thumbsTranslate = 0;
+      thumbsSwipedTranslate = 0;
+    } else {
+      thumbsTranslate = nextTranslate;
+      thumbsSwipedTranslate = nextTranslate;
+    }
+  }
+
+  function getThumbsTranslate(indexDifference) {
+    // the scroll space that is hidden on the left & right / top & bottom
+    // when the screen is not large enough to fit all thumbnails
+    let hiddenScroll;
+    const thumbsElement = document.getElementById('thumbnail');
+    const thumbsWrapper = document.getElementById('thumbnailWrapper');
+    const { width: thumbnailsWrapperWidth, height: thumbnailsWrapperHeight } =
+      thumbsWrapper.getBoundingClientRect();
+
+    if (disableThumbnailScroll) return 0;
+
+    if (thumbsElement) {
+      // total scroll required to see the last thumbnail
+      if (isThumbnailVertical()) {
+        if (thumbsElement.scrollHeight <= thumbnailsWrapperHeight) {
+          return 0;
+        }
+        hiddenScroll = thumbsElement.scrollHeight - thumbnailsWrapperHeight;
+      } else {
+        if (thumbsElement.scrollWidth <= thumbnailsWrapperWidth || thumbnailsWrapperWidth <= 0) {
+          return 0;
+        }
+        hiddenScroll = thumbsElement.scrollWidth - thumbnailsWrapperWidth;
+      }
+
+      // scroll-x or y required per index change
+      const perIndexScroll = hiddenScroll / (items.length - 1);
+      return indexDifference * perIndexScroll;
+    }
+    return 0;
   }
 
   function handleKeyDown(event) {

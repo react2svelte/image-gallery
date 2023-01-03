@@ -15,7 +15,7 @@
 
   $: isThumbnailVertical = thumbnailPosition === 'left' || thumbnailPosition === 'right';
 
-  function getThumbnailStyle() {
+  $: getThumbnailStyle = () => {
     let translate;
     const verticalTranslateValue = isRTL ? thumbsTranslate * -1 : thumbsTranslate;
 
@@ -38,7 +38,7 @@
       transform: ${translate};
       ${thumbsStyle}
     `;
-  }
+  };
 
   function getThumbnailBarHeight() {
     // TODO
@@ -60,12 +60,17 @@
   const dispatch = createEventDispatcher();
 </script>
 
-<div class="image-gallery-thumbnails" style={getThumbnailBarHeight()}>
+<div class="image-gallery-thumbnails" id="thumbnailWrapper" style={getThumbnailBarHeight()}>
   <nav
     class="image-gallery-thumbnails-container"
     style={getThumbnailStyle()}
     aria-label="Thumbnail Navigation"
+    id="thumbnail"
   >
+    <!-- These HTML ids are used to determine the width and height of the elements from another
+    component.
+     TODO: we use this as a replacement for React's "ref" but there should be a better solution.
+     -->
     {#each items as item, index}
       <Thumbnail
         {index}
