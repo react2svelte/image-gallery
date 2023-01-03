@@ -4,6 +4,8 @@
   import RightNav from '$lib/RightNav.svelte';
   import { createEventDispatcher } from 'svelte';
   import Slide from '$lib/Slide.svelte';
+  import Bullet from '$lib/Bullet.svelte';
+  import clsx from 'clsx';
 
   export let slideWrapperClass: string;
   export let items: TItem[];
@@ -153,6 +155,10 @@
       transition: all 450ms ease-out 0s;
     `; // ...slideStyle;
   };
+
+  $: getBulletStyle = (index, item) => {
+    return clsx('image-gallery-bullet', item.bulletClass, { active: currentIndex === index });
+  };
 </script>
 
 Current index in SlideWrapper: {currentIndex}
@@ -196,17 +202,20 @@ Current index in SlideWrapper: {currentIndex}
 
   <!-- TODO: render play button -->
 
-  <!--{#if showBullets}-->
-  <!--  <div class="image-gallery-bullets">-->
-  <!--    <div-->
-  <!--      class="image-gallery-bullets-container"-->
-  <!--      role="navigation"-->
-  <!--      aria-label="Bullet Navigation"-->
-  <!--    >-->
-  <!--      {bullets}-->
-  <!--    </div>-->
-  <!--  </div>-->
-  <!--{/if}-->
+  {#if showBullets}
+    <div class="image-gallery-bullets">
+      <div class="image-gallery-bullets-container" role="navigation" aria-label="Bullet Navigation">
+        {#each items as item, index}
+          <Bullet
+            igBulletClass={getBulletStyle(index, item)}
+            {currentIndex}
+            {index}
+            on:click={() => dispatch('slidejump', index)}
+          />
+        {/each}
+      </div>
+    </div>
+  {/if}
   <!-- TODO render fullscreen button -->
   {#if showIndex}
     <div class="image-gallery-index">

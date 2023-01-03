@@ -11,7 +11,7 @@
   export let lazyLoad: boolean = false;
   export let infinite: boolean = true;
   export let showIndex: boolean = false;
-  export let showBullets: boolean = false;
+  export let showBullets: boolean = true;
   export let showThumbnails: boolean = true;
   export let showPlayButton: boolean = true;
   export let showFullscreenButton: boolean = true;
@@ -172,6 +172,9 @@ Current index: {currentIndex}
       {isRTL}
       on:slideleft={() => slideLeft()}
       on:slideright={() => slideRight()}
+      on:slidejump={(event) => {
+        slideToIndex(event.detail);
+      }}
     />
   </div>
 </div>
