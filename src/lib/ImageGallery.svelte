@@ -180,8 +180,6 @@
   }
 </script>
 
-Current index: {currentIndex}
-
 <div class={''} aria-live="polite">
   <div class={''}>
     <SlideWrapper

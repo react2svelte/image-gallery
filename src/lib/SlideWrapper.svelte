@@ -161,8 +161,6 @@
   };
 </script>
 
-Current index in SlideWrapper: {currentIndex}
-
 <div class={slideWrapperClass}>
   <!-- TODO: render custom controls -->
   {#if canSlide}
