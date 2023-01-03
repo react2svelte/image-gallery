@@ -161,8 +161,8 @@ Current index in SlideWrapper: {currentIndex}
   <!-- TODO: render custom controls -->
   {#if canSlide}
     {#if showNav}
-      <LeftNav on:click={dispatch('slideleft')} disabled={!canSlideLeft} />
-      <RightNav on:click={dispatch('slideright')} disabled={!canSlideRight} />
+      <LeftNav on:click={() => dispatch('slideleft')} disabled={!canSlideLeft} />
+      <RightNav on:click={() => dispatch('slideright')} disabled={!canSlideRight} />
     {/if}
     <!--TODO: SwipeWrapper-->
     <div class="image-gallery-slides">

@@ -170,6 +170,8 @@ Current index: {currentIndex}
       {previousIndex}
       {infinite}
       {isRTL}
+      on:slideleft={() => slideLeft()}
+      on:slideright={() => slideRight()}
     />
   </div>
 </div>

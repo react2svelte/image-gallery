@@ -1,6 +1,6 @@
 <script lang="ts">
   import '../app.scss';
-  export let strokeWidth = 0;
+  export let strokeWidth = 3;
   export let viewBox = '0 0 24 24';
   export let icon: 'left' | 'right' | 'maximize' | 'minimize' | 'play' | 'pause';
 </script>
@@ -10,7 +10,7 @@
   xmlns="http://www.w3.org/2000/svg"
   {viewBox}
   fill="none"
-  stroke="black"
+  stroke="currentColor"
   stroke-width={strokeWidth}
   stroke-linecap="round"
   stroke-linejoin="round"
