@@ -6,6 +6,7 @@
   import Slide from '$lib/Slide.svelte';
   import Bullet from '$lib/Bullet.svelte';
   import clsx from 'clsx';
+  import Fullscreen from '$lib/Fullscreen.svelte';
 
   export let slideWrapperClass: string;
   export let items: TItem[];
@@ -16,6 +17,8 @@
   export let currentIndex: number;
   export let infinite: boolean;
   export let isRTL: boolean;
+  export let isFullscreen: boolean;
+  export let showFullscreenButton: boolean;
 
   $: canSlide = items.length >= 2;
   $: canSlidePrevious = currentIndex > 0;
@@ -163,6 +166,8 @@
 
 <div class={slideWrapperClass}>
   <!-- TODO: render custom controls -->
+
+  <!-- Slides -->
   {#if canSlide}
     {#if showNav}
       <LeftNav on:click={() => dispatch('slideleft')} disabled={!canSlideLeft} />
@@ -200,6 +205,7 @@
 
   <!-- TODO: render play button -->
 
+  <!--  Bullets -->
   {#if showBullets}
     <div class="image-gallery-bullets">
       <div class="image-gallery-bullets-container" role="navigation" aria-label="Bullet Navigation">
@@ -214,7 +220,13 @@
       </div>
     </div>
   {/if}
-  <!-- TODO render fullscreen button -->
+
+  <!-- Fullscreen button -->
+  {#if showFullscreenButton}
+    <Fullscreen on:click={() => dispatch('fullscreentoggle')} {isFullscreen} />
+  {/if}
+
+  <!-- Index -->
   {#if showIndex}
     <div class="image-gallery-index">
       <span class="image-gallery-index-current">

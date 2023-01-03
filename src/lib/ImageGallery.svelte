@@ -171,13 +171,43 @@
         break;
       case ESC_KEY:
         if (isFullscreen && !useBrowserFullscreen) {
-          // this.exitFullScreen();
+          exitFullScreen();
         }
         break;
       default:
         break;
     }
   }
+
+  $: toggleFullscreen = () => {
+    if (isFullscreen) {
+      exitFullScreen();
+    } else {
+      fullScreen();
+    }
+  };
+
+  $: fullScreen = () => {
+    if (useBrowserFullscreen) {
+      document.documentElement.requestFullscreen();
+    } else {
+      // TODO
+      // this.setModalFullscreen(true);
+    }
+    isFullscreen = true;
+  };
+
+  $: exitFullScreen = () => {
+    if (isFullscreen) {
+      if (useBrowserFullscreen) {
+        document.exitFullscreen();
+      } else {
+        // TODO
+        // this.setModalFullscreen(false);
+      }
+      isFullscreen = false;
+    }
+  };
 </script>
 
 <div class={''} aria-live="polite">
@@ -192,11 +222,14 @@
       {previousIndex}
       {infinite}
       {isRTL}
+      {isFullscreen}
+      {showFullscreenButton}
       on:slideleft={() => slideLeft()}
       on:slideright={() => slideRight()}
       on:slidejump={(event) => {
         slideToIndex(event.detail);
       }}
+      on:fullscreentoggle={toggleFullscreen}
     />
     {#if showThumbnails}
       <ThumbnailWrapper
