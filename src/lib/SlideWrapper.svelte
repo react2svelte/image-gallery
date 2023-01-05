@@ -36,7 +36,7 @@
 
   const dispatch = createEventDispatcher();
 
-  function getAlignmentClassName(index) {
+  $: getAlignmentClassName = (index) => {
     // Necessary for lazing loading
     let alignment = '';
     const leftClassName = 'image-gallery-left';
@@ -68,7 +68,7 @@
     }
 
     return alignment;
-  }
+  };
 
   $: slideIsTransitioning = (index) => {
     /*
@@ -197,8 +197,8 @@
       on:slideoffsetchanged={(e) => {
         currentSlideOffset = e.detail;
       }}
-      on:swipenext={() => currentIndex += 1}
-      on:swipeprevious={() => currentIndex -= 1}
+      on:swipenext={() => (currentIndex += 1)}
+      on:swipeprevious={() => (currentIndex -= 1)}
     >
       <div class="image-gallery-slides">
         {#each items as item, index}
