@@ -57,6 +57,7 @@
   let playPauseIntervalId = null;
   let isPlaying = false;
   let isFullscreen = false;
+  let modalFullscreen = false;
 
   let thumbsTranslate = 0;
   let thumbsSwipedTranslate = 0;
@@ -230,8 +231,7 @@
     if (useBrowserFullscreen) {
       document.documentElement.requestFullscreen();
     } else {
-      // TODO
-      // this.setModalFullscreen(true);
+      modalFullscreen = true;
     }
     isFullscreen = true;
   };
@@ -241,18 +241,56 @@
       if (useBrowserFullscreen) {
         document.exitFullscreen();
       } else {
-        // TODO
-        // this.setModalFullscreen(false);
+        modalFullscreen = false;
       }
       isFullscreen = false;
     }
   };
+
+  const getThumbnailPositionClassName = (thumbnailPosition) => {
+    // get the specific thumbnailPosition className
+    const leftClassName = 'image-gallery-thumbnails-left';
+    const rightClassName = 'image-gallery-thumbnails-right';
+    const bottomClassName = 'image-gallery-thumbnails-bottom';
+    const topClassName = 'image-gallery-thumbnails-top';
+
+    switch (thumbnailPosition) {
+      case 'left':
+        thumbnailPosition = ` ${leftClassName}`;
+        break;
+      case 'right':
+        thumbnailPosition = ` ${rightClassName}`;
+        break;
+      case 'bottom':
+        thumbnailPosition = ` ${bottomClassName}`;
+        break;
+      case 'top':
+        thumbnailPosition = ` ${topClassName}`;
+        break;
+      default:
+        break;
+    }
+
+    return thumbnailPosition;
+  };
+
+  $: igClass = clsx('image-gallery', additionalClass, { 'fullscreen-modal': modalFullscreen });
+  $: igContentClass = clsx(
+    'image-gallery-content',
+    getThumbnailPositionClassName(thumbnailPosition),
+    { fullscreen: isFullscreen }
+  );
+  $: slideWrapperClass = clsx(
+    'image-gallery-slide-wrapper',
+    getThumbnailPositionClassName(thumbnailPosition),
+    { 'image-gallery-rtl': isRTL }
+  );
 </script>
 
-<div class={''} aria-live="polite">
-  <div class={''}>
+<div class={igClass} aria-live="polite">
+  <div class={igContentClass}>
     <SlideWrapper
-      slideWrapperClass=""
+      {slideWrapperClass}
       {items}
       {showNav}
       {showBullets}
