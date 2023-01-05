@@ -189,7 +189,12 @@
       <LeftNav on:click={() => dispatch('slideleft')} disabled={!canSlideLeft} />
       <RightNav on:click={() => dispatch('slideright')} disabled={!canSlideRight} />
     {/if}
-    <div class="image-gallery-swipe" use:swipable={{delta: 0}} on:swiping={handleSwiping} on:swiped={handleSwiped}>
+    <div
+      class="image-gallery-swipe"
+      use:swipable={{ delta: 0 }}
+      on:swiping={handleSwiping}
+      on:swiped={handleSwiped}
+    >
       <div class="image-gallery-slides">
         {#each items as item, index}
           <Slide
