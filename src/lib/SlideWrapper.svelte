@@ -8,6 +8,7 @@
   import clsx from 'clsx';
   import Fullscreen from '$lib/Fullscreen.svelte';
   import PlayPause from '$lib/PlayPause.svelte';
+  import { swipable } from '@react2svelte/swipable';
 
   export let slideWrapperClass: string;
   export let items: TItem[];
@@ -22,6 +23,8 @@
   export let showPlayButton: boolean;
   export let isFullscreen: boolean;
   export let showFullscreenButton: boolean;
+  export let disableSwipe = false;
+  export let disablePropagation = false;
 
   $: canSlide = items.length >= 2;
   $: canSlidePrevious = currentIndex > 0;
@@ -115,6 +118,16 @@
     return !slideIsTransitioning(index) || (ignoreIsTransitioning() && !isFirstOrLastSlide(index));
   }
 
+  function handleSwiping({ event, absX, dir }) {
+    // TODO check if function does things correctly
+    console.log('swiping: ', event, absX, dir);
+  }
+
+  function handleSwiped({ event, absX, dir }) {
+    // TODO check if function does things correctly
+    console.log('swiped: ', event, absX, dir);
+  }
+
   $: getSlideStyle = (index) => {
     const baseTranslateX = -100 * currentIndex;
     const totalSlides = items.length - 1;
@@ -176,19 +189,20 @@
       <LeftNav on:click={() => dispatch('slideleft')} disabled={!canSlideLeft} />
       <RightNav on:click={() => dispatch('slideright')} disabled={!canSlideRight} />
     {/if}
-    <!--TODO: SwipeWrapper-->
-    <div class="image-gallery-slides">
-      {#each items as item, index}
-        <Slide
-          {index}
-          alignment={getAlignmentClassName(index)}
-          originalClass={item.originalClass}
-          slideStyle={getSlideStyle(index)}
-          showItem={true}
-          {item}
-          isFullscreen={false}
-        />
-      {/each}
+    <div class="image-gallery-swipe" use:swipable={{delta: 0}} on:swiping={handleSwiping} on:swiped={handleSwiped}>
+      <div class="image-gallery-slides">
+        {#each items as item, index}
+          <Slide
+            {index}
+            alignment={getAlignmentClassName(index)}
+            originalClass={item.originalClass}
+            slideStyle={getSlideStyle(index)}
+            showItem={true}
+            {item}
+            isFullscreen={false}
+          />
+        {/each}
+      </div>
     </div>
   {:else}
     <div class="image-gallery-slides">
