@@ -31,7 +31,7 @@
 <div
   aria-label={`Go to Slide ${index + 1}`}
   tabIndex="-1"
-  class={`image-gallery-slide ${alignment} ${originalClass}`}
+  class={`image-gallery-slide ${alignment} ${originalClass ?? ''}`}
   style={slideStyle}
   on:click={() => dispatch('click')}
   on:keyup={handleSlideKeyUp}

@@ -58,6 +58,10 @@
   let isPlaying = false;
   let isFullscreen = false;
   let modalFullscreen = false;
+  let isTransitioning = false;
+  let currentSlideOffset = 0;
+  let transitionTimer = null;
+  let isSwipingThumbnail = false;
 
   let thumbsTranslate = 0;
   let thumbsSwipedTranslate = 0;
@@ -87,22 +91,48 @@
   }
 
   function slideToIndex(index) {
-    const slideCount = items.length - 1;
-    let nextIndex = index;
-    if (index < 0) {
-      nextIndex = slideCount;
-    } else if (index > slideCount) {
-      nextIndex = 0;
-    }
+    if (!isTransitioning) {
+      // TODO The original code is checking whether an event is provided
+      if (playPauseIntervalId) {
+        // user triggered event while ImageGallery is playing, reset interval
+        pause(false);
+        play(false);
+      }
 
-    if (onBeforeSlide && nextIndex !== currentIndex) {
-      onBeforeSlide(nextIndex);
-    }
+      const slideCount = items.length - 1;
+      let nextIndex = index;
+      if (index < 0) {
+        nextIndex = slideCount;
+      } else if (index > slideCount) {
+        nextIndex = 0;
+      }
 
-    previousIndex = currentIndex;
-    currentIndex = nextIndex;
-    slideThumbnailBar();
+      if (onBeforeSlide && nextIndex !== currentIndex) {
+        onBeforeSlide(nextIndex);
+      }
+
+      isTransitioning = nextIndex !== currentIndex;
+      previousIndex = currentIndex;
+      currentIndex = nextIndex;
+      slideThumbnailBar();
+      currentSlideOffset = 0;
+      onSliding();
+    }
   }
+
+  $: onSliding = () => {
+    transitionTimer = window.setTimeout(() => {
+      if (isTransitioning) {
+        isTransitioning = false;
+        // reset swiping thumbnail after transitioning to new slide,
+        // so we can resume thumbnail auto translate
+        isSwipingThumbnail = false;
+        if (onSlide) {
+          onSlide(currentIndex);
+        }
+      }
+    }, slideDuration + 50);
+  };
 
   function slideThumbnailBar() {
     const nextTranslate = -getThumbsTranslate(currentIndex);
@@ -289,28 +319,32 @@
 
 <div class={igClass} aria-live="polite">
   <div class={igContentClass}>
-    <SlideWrapper
-      {slideWrapperClass}
-      {items}
-      {showNav}
-      {showBullets}
-      {showIndex}
-      {currentIndex}
-      {previousIndex}
-      {infinite}
-      {isRTL}
-      {isFullscreen}
-      {showFullscreenButton}
-      {isPlaying}
-      {showPlayButton}
-      on:slideleft={() => slideLeft()}
-      on:slideright={() => slideRight()}
-      on:slidejump={(event) => {
-        slideToIndex(event.detail);
-      }}
-      on:playtoggle={togglePlay}
-      on:fullscreentoggle={toggleFullscreen}
-    />
+    {#if thumbnailPosition === 'bottom' || thumbnailPosition === 'right'}
+      <SlideWrapper
+        {slideWrapperClass}
+        {items}
+        {showNav}
+        {showBullets}
+        {showIndex}
+        {currentIndex}
+        {previousIndex}
+        {infinite}
+        {isRTL}
+        {isFullscreen}
+        {showFullscreenButton}
+        {isPlaying}
+        {showPlayButton}
+        {currentSlideOffset}
+        {isTransitioning}
+        on:slideleft={() => slideLeft()}
+        on:slideright={() => slideRight()}
+        on:slidejump={(event) => {
+          slideToIndex(event.detail);
+        }}
+        on:playtoggle={togglePlay}
+        on:fullscreentoggle={toggleFullscreen}
+      />
+    {/if}
     {#if showThumbnails}
       <ThumbnailWrapper
         {items}
@@ -324,6 +358,32 @@
         on:slidejump={(event) => {
           slideToIndex(event.detail);
         }}
+      />
+    {/if}
+    {#if thumbnailPosition === 'top' || thumbnailPosition === 'left'}
+      <SlideWrapper
+        {slideWrapperClass}
+        {items}
+        {showNav}
+        {showBullets}
+        {showIndex}
+        {currentIndex}
+        {previousIndex}
+        {infinite}
+        {isRTL}
+        {isFullscreen}
+        {showFullscreenButton}
+        {isPlaying}
+        {showPlayButton}
+        {currentSlideOffset}
+        {isTransitioning}
+        on:slideleft={() => slideLeft()}
+        on:slideright={() => slideRight()}
+        on:slidejump={(event) => {
+          slideToIndex(event.detail);
+        }}
+        on:playtoggle={togglePlay}
+        on:fullscreentoggle={toggleFullscreen}
       />
     {/if}
   </div>

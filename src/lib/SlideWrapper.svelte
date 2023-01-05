@@ -16,20 +16,22 @@
   export let showIndex: boolean;
   export let previousIndex: number;
   export let currentIndex: number;
+  export let isTransitioning;
   export let infinite: boolean;
   export let isRTL: boolean;
   export let isPlaying: boolean;
   export let showPlayButton: boolean;
   export let isFullscreen: boolean;
   export let showFullscreenButton: boolean;
+  export let disableSwipe = false;
+  export let disablePropagation = false;
+  export let currentSlideOffset;
 
   $: canSlide = items.length >= 2;
   $: canSlidePrevious = currentIndex > 0;
   $: canSlideNext = currentIndex < items.length - 1;
   $: canSlideLeft = infinite || (isRTL ? canSlideNext : canSlidePrevious);
   $: canSlideRight = infinite || (isRTL ? canSlidePrevious : canSlideNext);
-
-  let currentSlideOffset = 0;
 
   const dispatch = createEventDispatcher();
 
@@ -67,17 +69,16 @@
     return alignment;
   }
 
-  function slideIsTransitioning(index) {
-    const isTransitioning = false;
+  $: slideIsTransitioning = (index) => {
     /*
     returns true if the gallery is transitioning and the index is not the
     previous or currentIndex
     */
     const indexIsNotPreviousOrNextSlide = !(index === previousIndex || index === currentIndex);
     return isTransitioning && indexIsNotPreviousOrNextSlide;
-  }
+  };
 
-  function ignoreIsTransitioning() {
+  $: ignoreIsTransitioning = () => {
     /*
       Ignore isTransitioning because were not going to sibling slides
       e.g. center to left or center to right
@@ -90,16 +91,16 @@
     const notGoingFromLastToFirst = !(previousIndex === totalSlides && currentIndex === 0);
 
     return slidingMoreThanOneSlideLeftOrRight && notGoingFromFirstToLast && notGoingFromLastToFirst;
-  }
+  };
 
-  function isFirstOrLastSlide(index) {
+  $: isFirstOrLastSlide = (index) => {
     const totalSlides = items.length - 1;
     const isLastSlide = index === totalSlides;
     const isFirstSlide = index === 0;
     return isLastSlide || isFirstSlide;
-  }
+  };
 
-  function isSlideVisible(index) {
+  $: isSlideVisible = (index) => {
     /*
       Show slide if slide is the current slide and the next slide
       OR
@@ -112,8 +113,19 @@
       so unless were going from first to last or vice versa we don't want the first
       or last slide to show up during the transition
     */
+    console.log(
+      index,
+      'currentIndex',
+      currentIndex,
+      'previousIndex',
+      previousIndex,
+      'isSlideVisible',
+      !slideIsTransitioning(index) || (ignoreIsTransitioning() && !isFirstOrLastSlide(index)),
+      'slideIsTransitioning',
+      slideIsTransitioning(index)
+    );
     return !slideIsTransitioning(index) || (ignoreIsTransitioning() && !isFirstOrLastSlide(index));
-  }
+  };
 
   $: getSlideStyle = (index) => {
     const baseTranslateX = -100 * currentIndex;
