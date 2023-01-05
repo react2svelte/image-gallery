@@ -7,6 +7,7 @@
   import Bullet from '$lib/Bullet.svelte';
   import clsx from 'clsx';
   import Fullscreen from '$lib/Fullscreen.svelte';
+  import PlayPause from '$lib/PlayPause.svelte';
 
   export let slideWrapperClass: string;
   export let items: TItem[];
@@ -17,6 +18,8 @@
   export let currentIndex: number;
   export let infinite: boolean;
   export let isRTL: boolean;
+  export let isPlaying: boolean;
+  export let showPlayButton: boolean;
   export let isFullscreen: boolean;
   export let showFullscreenButton: boolean;
 
@@ -203,7 +206,10 @@
     </div>
   {/if}
 
-  <!-- TODO: render play button -->
+  <!-- Play/pause button -->
+  {#if showPlayButton}
+    <PlayPause on:click={() => dispatch('playtoggle')} {isPlaying} />
+  {/if}
 
   <!--  Bullets -->
   {#if showBullets}

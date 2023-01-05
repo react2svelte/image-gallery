@@ -54,6 +54,8 @@
 
   let currentIndex = 1;
   let previousIndex = 1;
+  let playPauseIntervalId = null;
+  let isPlaying = false;
   let isFullscreen = false;
 
   let thumbsTranslate = 0;
@@ -179,6 +181,43 @@
     }
   }
 
+  $: togglePlay = () => {
+    if (playPauseIntervalId) {
+      pause();
+    } else {
+      play();
+    }
+  };
+
+  $: pauseOrPlay = () => {
+    if (!infinite && !canSlideRight) {
+      this.pause();
+    } else {
+      slideToIndex(currentIndex + 1);
+    }
+  };
+
+  $: play = (shouldCallOnPlay = true) => {
+    if (!playPauseIntervalId) {
+      isPlaying = true;
+      playPauseIntervalId = window.setInterval(pauseOrPlay, Math.max(slideInterval, slideDuration));
+      if (onPlay && shouldCallOnPlay) {
+        onPlay(currentIndex);
+      }
+    }
+  };
+
+  $: pause = (shouldCallOnPause = true) => {
+    if (playPauseIntervalId) {
+      window.clearInterval(playPauseIntervalId);
+      playPauseIntervalId = null;
+      isPlaying = false;
+      if (onPause && shouldCallOnPause) {
+        onPause(currentIndex);
+      }
+    }
+  };
+
   $: toggleFullscreen = () => {
     if (isFullscreen) {
       exitFullScreen();
@@ -224,11 +263,14 @@
       {isRTL}
       {isFullscreen}
       {showFullscreenButton}
+      {isPlaying}
+      {showPlayButton}
       on:slideleft={() => slideLeft()}
       on:slideright={() => slideRight()}
       on:slidejump={(event) => {
         slideToIndex(event.detail);
       }}
+      on:playtoggle={togglePlay}
       on:fullscreentoggle={toggleFullscreen}
     />
     {#if showThumbnails}
