@@ -9,7 +9,7 @@
 <script lang="ts">
   import { swipable } from '@react2svelte/swipable';
   import type { SwipeEventData } from '@react2svelte/swipable/types';
-	import { createEventDispatcher } from 'svelte';
+  import { createEventDispatcher } from 'svelte';
 
   let dispatch = createEventDispatcher();
 
@@ -25,16 +25,16 @@
   export let swipingTransitionDuration = 0;
   export let swipeThreshold = 30;
   export let flickThreshold = 0.4;
+  // external state
   export let isRTL = false;
+  export let galleryWidth: number;
   export let canSlideLeft: boolean;
   export let canSlideRight: boolean;
-
+  export let isTransitioning: boolean;
 
   // state
   let swipingLeftRight: boolean;
   let swipingUpDown: boolean;
-  let galleryWidth: number;
-  let isTransitioning: boolean;
 
   let currentSlideOffset: number;
   $: dispatch('slideoffsetchanged', currentSlideOffset);
@@ -107,10 +107,12 @@
     if (stopPropagation) event.stopPropagation();
     resetSwipingDirection();
 
+    currentSlideOffset = 0;
+
     // if it is RTL the direction is reversed
     const swipeDirection = (dir === LEFT ? 1 : -1) * (isRTL ? -1 : 1);
     const isSwipeUpOrDown = dir === UP || dir === DOWN;
-    const isLeftRightFlick = (velocity > flickThreshold) && !isSwipeUpOrDown;
+    const isLeftRightFlick = velocity > flickThreshold && !isSwipeUpOrDown;
     handleOnSwipedTo(swipeDirection, isLeftRightFlick);
   }
 
@@ -123,8 +125,7 @@
     }
 
     // If we can't swipe left or right, stay in the current index (noop)
-    if ((swipeDirection === -1 && !canSlideLeft)
-        || (swipeDirection === 1 && !canSlideRight)) {
+    if ((swipeDirection === -1 && !canSlideLeft) || (swipeDirection === 1 && !canSlideRight)) {
       indexOffset = 0;
     }
     if (indexOffset < 0) {
@@ -138,8 +139,8 @@
 <div
   class="image-gallery-swipe"
   use:swipable={{ delta: 0 }}
-  on:swiping={handleSwiping}
-  on:swiped={handleSwiped}
+  on:swiping={(e) => handleSwiping(e.detail)}
+  on:swiped={(e) => handleSwiped(e.detail)}
 >
   <slot />
 </div>

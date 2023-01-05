@@ -8,6 +8,7 @@
   import clsx from 'clsx';
   import Fullscreen from '$lib/Fullscreen.svelte';
   import PlayPause from '$lib/PlayPause.svelte';
+  import SwipeWrapper from './SwipeWrapper.svelte';
 
   export let slideWrapperClass: string;
   export let items: TItem[];
@@ -188,19 +189,31 @@
       <LeftNav on:click={() => dispatch('slideleft')} disabled={!canSlideLeft} />
       <RightNav on:click={() => dispatch('slideright')} disabled={!canSlideRight} />
     {/if}
-    <div class="image-gallery-slides">
-      {#each items as item, index}
-        <Slide
-          {index}
-          alignment={getAlignmentClassName(index)}
-          originalClass={item.originalClass}
-          slideStyle={getSlideStyle(index)}
-          showItem={true}
-          {item}
-          isFullscreen={false}
-        />
-      {/each}
-    </div>
+    <SwipeWrapper
+      {canSlideLeft}
+      {canSlideRight}
+      isTransitioning={false}
+      galleryWidth={1300}
+      on:slideoffsetchanged={(e) => {
+        currentSlideOffset = e.detail;
+      }}
+      on:swipenext={() => currentIndex += 1}
+      on:swipeprevious={() => currentIndex -= 1}
+    >
+      <div class="image-gallery-slides">
+        {#each items as item, index}
+          <Slide
+            {index}
+            alignment={getAlignmentClassName(index)}
+            originalClass={item.originalClass}
+            slideStyle={getSlideStyle(index)}
+            showItem={true}
+            {item}
+            isFullscreen={false}
+          />
+        {/each}
+      </div>
+    </SwipeWrapper>
   {:else}
     <div class="image-gallery-slides">
       {#each items as item, index}
