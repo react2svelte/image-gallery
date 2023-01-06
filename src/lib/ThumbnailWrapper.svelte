@@ -11,12 +11,13 @@
   export let isRTL: boolean;
   export let thumbnailPosition: Position;
   export let stopPropagation: boolean;
+
+  export let slideDuration: number;
   export let swipingThumbnailTransitionDuration: number;
 
   let isSwipingThumbnail = false; // currently swiping?
   let isSwipedThumbnail = false; // swiped? relevant for auto-play
 
-  export let slideDuration: number;
   export let slideOnThumbnailOver: boolean;
   export let disableThumbnailScroll: boolean;
 
@@ -35,7 +36,9 @@
   let thumbsTranslate = 0;
   let thumbsSwipedTranslate = 0;
 
-  $: thumbsStyle = `transition: all ${slideDuration}ms ease-out;`;
+  $: thumbsStyle = `transition: all ${
+    isSwipingThumbnail ? swipingThumbnailTransitionDuration : slideDuration
+  }ms ease-out;`;
 
   $: thumbnailStyle = getThumbnailStyle(
     isRTL,
