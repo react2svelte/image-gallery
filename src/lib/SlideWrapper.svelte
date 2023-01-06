@@ -28,6 +28,7 @@
   export let stopPropagation: boolean;
   export let currentSlideOffset: number;
   export let galleryWidth: number;
+  export let indexSeparator: string;
 
   $: canSlide = items.length >= 2;
   $: canSlidePrevious = currentIndex > 0;
@@ -191,7 +192,7 @@
         {currentIndex + 1}
       </span>
       <span class="image-gallery-index-separator">
-        {' / '}
+        {indexSeparator}
       </span>
       <span class="image-gallery-index-total">
         {items.length}

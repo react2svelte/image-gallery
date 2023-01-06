@@ -1,10 +1,9 @@
 <script lang="ts">
   import '../app.scss';
-  import clsx from 'clsx';
   import type { Position, Direction, TItem } from '$lib/types';
   import SlideWrapper from '$lib/SlideWrapper.svelte';
   import ThumbnailWrapper from '$lib/ThumbnailWrapper.svelte';
-  import { onMount } from 'svelte';
+  import { createEventDispatcher, onMount } from 'svelte';
   import { debounce } from 'throttle-debounce';
   import {
     getIgClass,
@@ -63,8 +62,8 @@
   export let isRTL: boolean = false;
   export let useWindowKeyDown = true;
 
-  let currentIndex = 1;
-  let previousIndex = 1;
+  $: currentIndex = startIndex;
+  let previousIndex = startIndex;
   let playPauseIntervalId: number | null = null;
   let isPlaying = false;
   let isFullscreen = false;
@@ -77,6 +76,7 @@
   let gallerySlideWrapperHeight = 1000;
   let resizeSlideWrapperObserver: ResizeObserver;
   let resizeThumbnailWrapperObserver: ResizeObserver;
+  let thumbnailMouseOverTimer: number | null = null;
 
   let thumbnailWrapper: ThumbnailWrapper;
 
@@ -87,6 +87,8 @@
   $: canSlideRight = infinite || (isRTL ? canSlidePrevious : canSlideNext);
 
   $: isThumbnailVertical = thumbnailPosition === 'left' || thumbnailPosition === 'right';
+
+  const dispatch = createEventDispatcher();
 
   function slideLeft() {
     slideTo(isRTL ? 'right' : 'left');
@@ -197,12 +199,9 @@
     if (!playPauseIntervalId) {
       isPlaying = true;
       playPauseIntervalId = window.setInterval(pauseOrPlay, Math.max(slideInterval, slideDuration));
-      /**
-       * TODO dispatch an event instead of calling this handler
-      if (onPlay && shouldCallOnPlay) {
-        onPlay(currentIndex);
+      if (shouldCallOnPlay) {
+        dispatch('play', currentIndex);
       }
-      */
     }
   };
 
@@ -211,12 +210,9 @@
       window.clearInterval(playPauseIntervalId);
       playPauseIntervalId = null;
       isPlaying = false;
-      /**
-       * TODO dispatch an event instead of calling this handler
-      if (onPause && shouldCallOnPause) {
-        onPause(currentIndex);
+      if (shouldCallOnPause) {
+        dispatch('pause', currentIndex);
       }
-      */
     }
   };
 
@@ -258,6 +254,9 @@
     const thumbnailWrapperRef = document.getElementById('thumbnailWrapper')!;
     initThumbnailWrapperResizeObserver(thumbnailWrapperRef);
     // TODO: implement handleScreenChange()
+    if (autoPlay) {
+      play();
+    }
   });
 
   const initSlideWrapperResizeObserver = (element: HTMLElement) => {
@@ -310,6 +309,28 @@
       gallerySlideWrapperHeight = slideWrapperRef.offsetHeight;
     }
   };
+
+  $: onThumbnailMouseOver = (event: { detail: number }) => {
+    const index = event.detail;
+    if (thumbnailMouseOverTimer) {
+      window.clearTimeout(thumbnailMouseOverTimer);
+      thumbnailMouseOverTimer = null;
+    }
+    thumbnailMouseOverTimer = window.setTimeout(() => {
+      slideToIndex(index);
+      pause();
+    }, 300);
+  };
+
+  $: onThumbnailMouseLeave = () => {
+    if (thumbnailMouseOverTimer) {
+      window.clearTimeout(thumbnailMouseOverTimer);
+      thumbnailMouseOverTimer = null;
+      if (autoPlay) {
+        play();
+      }
+    }
+  };
 </script>
 
 <!-- TODO: we use an id as a replacement for React's "ref" -->
@@ -340,6 +361,7 @@
         {galleryWidth}
         {disableSwipe}
         {stopPropagation}
+        {indexSeparator}
         on:slideleft={() => slideLeft()}
         on:slideright={() => slideRight()}
         on:slidejump={(event) => {
@@ -363,6 +385,8 @@
         on:slidejump={(event) => {
           slideToIndex(event.detail);
         }}
+        on:thumbnailmouseover={slideOnThumbnailOver && onThumbnailMouseOver}
+        on:thumbnailmouseleave={slideOnThumbnailOver && onThumbnailMouseLeave}
       />
     {/if}
     {#if thumbnailPosition === 'top' || thumbnailPosition === 'left'}
@@ -385,6 +409,7 @@
         {galleryWidth}
         {disableSwipe}
         {stopPropagation}
+        {indexSeparator}
         on:slideleft={() => slideLeft()}
         on:slideright={() => slideRight()}
         on:slidejump={(event) => {

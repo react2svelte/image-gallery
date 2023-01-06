@@ -5,8 +5,8 @@
   export let index: number;
   export let currentIndex: number;
   export let igThumbnailClass: string;
-  export let slideOnThumbnailOver: boolean;
   export let item: TItem;
+  ``;
 
   const dispatch = createEventDispatcher();
 </script>
@@ -17,7 +17,7 @@
   aria-pressed={currentIndex === index}
   aria-label={`Go to Slide ${index + 1}`}
   class={igThumbnailClass}
-  on:mouseleave={slideOnThumbnailOver ? (event) => dispatch('mouseleave', event) : null}
+  on:mouseleave={(event) => dispatch('mouseleave', event)}
   on:mouseover={(event) => dispatch('mouseover', event)}
   on:focus={(event) => dispatch('focus', event)}
   on:keyup={(event) => dispatch('keyup', event)}
