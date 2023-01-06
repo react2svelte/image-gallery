@@ -4,6 +4,8 @@
   import type { Position, TItem } from '$lib/types';
   import SlideWrapper from '$lib/SlideWrapper.svelte';
   import ThumbnailWrapper from '$lib/ThumbnailWrapper.svelte';
+  import { onMount } from 'svelte';
+  import { debounce } from 'throttle-debounce';
 
   export let flickThreshold: number = 0.4;
   export let items: TItem[];
@@ -62,6 +64,12 @@
   let currentSlideOffset = 0;
   let transitionTimer = null;
   let isSwipingThumbnail = false;
+  let galleryWidth = 1000;
+  let gallerySlideWrapperHeight = 1000;
+  let thumbnailsWrapperWidth = 1000;
+  let thumbnailsWrapperHeight = 1000;
+  let resizeSlideWrapperObserver: ResizeObserver;
+  let resizeThumbnailWrapperObserver: ResizeObserver;
 
   let thumbsTranslate = 0;
   let thumbsSwipedTranslate = 0;
@@ -155,6 +163,7 @@
     let hiddenScroll;
     const thumbsElement = document.getElementById('thumbnail');
     const thumbsWrapper = document.getElementById('thumbnailWrapper');
+    // TODO use the state values that are getting updated by the ResizeObserver
     const { width: thumbnailsWrapperWidth, height: thumbnailsWrapperHeight } =
       thumbsWrapper.getBoundingClientRect();
 
@@ -315,9 +324,71 @@
     getThumbnailPositionClassName(thumbnailPosition),
     { 'image-gallery-rtl': isRTL }
   );
+
+  onMount(async () => {
+    const slideWrapperRef = document.getElementById('slideWrapper');
+    initSlideWrapperResizeObserver(slideWrapperRef);
+    const thumbnailWrapperRef = document.getElementById('thumbnailWrapper');
+    initThumbnailWrapperResizeObserver(thumbnailWrapperRef);
+  });
+
+  $: initSlideWrapperResizeObserver = (element: HTMLElement) => {
+    if (!element) {
+      return;
+    }
+    // keeps track of gallery height changes for vertical thumbnail height
+    resizeSlideWrapperObserver = new ResizeObserver(
+      debounce(50, (entries: ResizeObserverEntry[]) => {
+        if (!entries) return;
+        entries.forEach((entry) => {
+          thumbnailsWrapperWidth = entry.contentRect.width;
+          handleResize();
+        });
+      })
+    );
+    resizeSlideWrapperObserver.observe(element);
+  };
+
+  $: initThumbnailWrapperResizeObserver = (element: HTMLElement) => {
+    if (!element) {
+      return;
+    } // thumbnails are not always available
+    resizeThumbnailWrapperObserver = new ResizeObserver(
+      debounce(50, (entries) => {
+        if (!entries) return;
+        entries.forEach((entry) => {
+          thumbnailsWrapperHeight = entry.contentRect.height;
+          handleResize();
+        });
+      })
+    );
+    resizeThumbnailWrapperObserver.observe(element.current);
+  };
+
+  $: handleResize = () => {
+    // component has been unmounted
+    // TODO
+    // if (!this.imageGallery) {
+    //   return;
+    // }
+
+    const imageGalleryRef = document.getElementById('imageGallery');
+    if (imageGalleryRef) {
+      galleryWidth = imageGalleryRef.offsetWidth;
+    }
+
+    const slideWrapperRef = document.getElementById('slideWrapper');
+    if (slideWrapperRef) {
+      gallerySlideWrapperHeight = slideWrapperRef.offsetHeight;
+    }
+
+    // Adjust thumbnail container when thumbnail width or height is adjusted
+    thumbsTranslate = getThumbsTranslate(currentIndex);
+  };
 </script>
 
-<div class={igClass} aria-live="polite">
+<!-- TODO: we use an id as a replacement for React's "ref" -->
+<div class={igClass} aria-live="polite" id="imageGallery">
   <div class={igContentClass}>
     {#if thumbnailPosition === 'bottom' || thumbnailPosition === 'right'}
       <SlideWrapper
@@ -336,6 +407,7 @@
         {showPlayButton}
         {currentSlideOffset}
         {isTransitioning}
+        {galleryWidth}
         on:slideleft={() => slideLeft()}
         on:slideright={() => slideRight()}
         on:slidejump={(event) => {
@@ -377,6 +449,7 @@
         {showPlayButton}
         {currentSlideOffset}
         {isTransitioning}
+        galleryWidth={getGalleryWidth()}
         on:slideleft={() => slideLeft()}
         on:slideright={() => slideRight()}
         on:slidejump={(event) => {

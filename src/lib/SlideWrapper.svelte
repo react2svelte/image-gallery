@@ -27,6 +27,7 @@
   export let disableSwipe = false;
   export let disablePropagation = false;
   export let currentSlideOffset;
+  export let galleryWidth;
 
   $: canSlide = items.length >= 2;
   $: canSlidePrevious = currentIndex > 0;
@@ -114,17 +115,6 @@
       so unless were going from first to last or vice versa we don't want the first
       or last slide to show up during the transition
     */
-    console.log(
-      index,
-      'currentIndex',
-      currentIndex,
-      'previousIndex',
-      previousIndex,
-      'isSlideVisible',
-      !slideIsTransitioning(index) || (ignoreIsTransitioning() && !isFirstOrLastSlide(index)),
-      'slideIsTransitioning',
-      slideIsTransitioning(index)
-    );
     return !slideIsTransitioning(index) || (ignoreIsTransitioning() && !isFirstOrLastSlide(index));
   };
 
@@ -180,7 +170,8 @@
   };
 </script>
 
-<div class={slideWrapperClass}>
+<!-- TODO: we use an id as a replacement for React's "ref" -->
+<div class={slideWrapperClass} id="slideWrapper">
   <!-- TODO: render custom controls -->
 
   <!-- Slides -->
@@ -193,7 +184,7 @@
       {canSlideLeft}
       {canSlideRight}
       isTransitioning={false}
-      galleryWidth={1300}
+      {galleryWidth}
       on:slideoffsetchanged={(e) => {
         currentSlideOffset = e.detail;
       }}
