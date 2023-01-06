@@ -1,3 +1,4 @@
+export type Direction = 'left' | 'right';
 export type Position = 'top' | 'bottom' | 'left' | 'right';
 
 export type TImage = {

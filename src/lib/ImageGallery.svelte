@@ -1,7 +1,7 @@
 <script lang="ts">
   import '../app.scss';
   import clsx from 'clsx';
-  import type { Position, TItem } from '$lib/types';
+  import type { Position, Direction, TItem } from '$lib/types';
   import SlideWrapper from '$lib/SlideWrapper.svelte';
   import ThumbnailWrapper from '$lib/ThumbnailWrapper.svelte';
   import { onMount } from 'svelte';
@@ -40,6 +40,7 @@
   export let swipeThreshold: number = 30;
   export let swipingTransitionDuration: number = 0;
   export let swipingThumbnailTransitionDuration: number = 0;
+  /** TODO
   export let onSlide: Function = null;
   export let onBeforeSlide: Function = null;
   export let onScreenChange: Function = null;
@@ -55,6 +56,7 @@
   export let onMouseLeave: Function = null;
   export let onThumbnailError: Function = null;
   export let onThumbnailClick: Function = null;
+  */
   export let stopPropagation: boolean = false;
   export let additionalClass: string = '';
   export let useTranslate3D: boolean = true;
@@ -63,7 +65,7 @@
 
   let currentIndex = 1;
   let previousIndex = 1;
-  let playPauseIntervalId = null;
+  let playPauseIntervalId: number | null = null;
   let isPlaying = false;
   let isFullscreen = false;
   let modalFullscreen = false;
@@ -98,12 +100,12 @@
     slideTo(isRTL ? 'left' : 'right');
   }
 
-  function slideTo(direction) {
+  function slideTo(direction: Direction) {
     const nextIndex = currentIndex + (direction === 'left' ? -1 : 1);
     slideToIndex(nextIndex);
   }
 
-  function slideToIndex(index) {
+  function slideToIndex(index: number) {
     if (!isTransitioning) {
       // TODO The original code is checking whether an event is provided
       if (playPauseIntervalId) {
@@ -119,10 +121,12 @@
       } else if (index > slideCount) {
         nextIndex = 0;
       }
-
+      /**
+       * TODO dispatch an event instead of calling this handler
       if (onBeforeSlide && nextIndex !== currentIndex) {
         onBeforeSlide(nextIndex);
       }
+      */
 
       isTransitioning = nextIndex !== currentIndex;
       previousIndex = currentIndex;
@@ -140,9 +144,12 @@
         // reset swiping thumbnail after transitioning to new slide,
         // so we can resume thumbnail auto translate
         isSwipingThumbnail = false;
+        /**
+         * TODO dispatch an event instead of calling this handler
         if (onSlide) {
           onSlide(currentIndex);
         }
+        */
       }
     }, slideDuration + 50);
   };
@@ -169,28 +176,24 @@
     }
   };
 
-  function handleKeyDown(event) {
+  function handleKeyDown(event: KeyboardEvent) {
     // keep track of mouse vs keyboard usage for a11y
     // this.imageGallery.current.classList.remove('image-gallery-using-mouse');
 
     if (disableKeyDown) return;
-    const LEFT_ARROW = 37;
-    const RIGHT_ARROW = 39;
-    const ESC_KEY = 27;
-    const key = parseInt(event.keyCode || event.which || 0, 10);
 
-    switch (key) {
-      case LEFT_ARROW:
+    switch (event.code) {
+      case "ArrowLeft":
         if (canSlideLeft) {
           slideLeft();
         }
         break;
-      case RIGHT_ARROW:
+      case "ArrowRight":
         if (canSlideRight) {
           slideRight();
         }
         break;
-      case ESC_KEY:
+      case "Escape":
         if (isFullscreen && !useBrowserFullscreen) {
           exitFullScreen();
         }
@@ -210,7 +213,7 @@
 
   $: pauseOrPlay = () => {
     if (!infinite && !canSlideRight) {
-      this.pause();
+      pause();
     } else {
       slideToIndex(currentIndex + 1);
     }
@@ -220,9 +223,12 @@
     if (!playPauseIntervalId) {
       isPlaying = true;
       playPauseIntervalId = window.setInterval(pauseOrPlay, Math.max(slideInterval, slideDuration));
+      /**
+       * TODO dispatch an event instead of calling this handler
       if (onPlay && shouldCallOnPlay) {
         onPlay(currentIndex);
       }
+      */
     }
   };
 
@@ -231,9 +237,12 @@
       window.clearInterval(playPauseIntervalId);
       playPauseIntervalId = null;
       isPlaying = false;
+      /**
+       * TODO dispatch an event instead of calling this handler
       if (onPause && shouldCallOnPause) {
         onPause(currentIndex);
       }
+      */
     }
   };
 
@@ -270,9 +279,9 @@
   $: slideWrapperClass = getSlideWrapperClass(isRTL, thumbnailPosition);
 
   onMount(async () => {
-    const slideWrapperRef = document.getElementById('slideWrapper');
+    const slideWrapperRef = document.getElementById('slideWrapper')!;
     initSlideWrapperResizeObserver(slideWrapperRef);
-    const thumbnailWrapperRef = document.getElementById('thumbnailWrapper');
+    const thumbnailWrapperRef = document.getElementById('thumbnailWrapper')!;
     initThumbnailWrapperResizeObserver(thumbnailWrapperRef);
     // TODO: implement handleScreenChange()
   });
@@ -299,7 +308,7 @@
       return;
     } // thumbnails are not always available
     resizeThumbnailWrapperObserver = new ResizeObserver(
-      debounce(50, (entries) => {
+      debounce(50, (entries: ResizeObserverEntry[]) => {
         if (!entries) return;
         entries.forEach((entry) => {
           thumbnailsWrapperHeight = entry.contentRect.height;
@@ -409,6 +418,8 @@
         {currentSlideOffset}
         {isTransitioning}
         {galleryWidth}
+        {disableSwipe}
+        {stopPropagation}
         on:slideleft={() => slideLeft()}
         on:slideright={() => slideRight()}
         on:slidejump={(event) => {
