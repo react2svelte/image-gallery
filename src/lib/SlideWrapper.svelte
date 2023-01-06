@@ -37,7 +37,7 @@
 
   const dispatch = createEventDispatcher();
 
-  $: slideIsTransitioning = (index) => {
+  $: slideIsTransitioning = (index: number) => {
     /*
     returns true if the gallery is transitioning and the index is not the
     previous or currentIndex
@@ -61,14 +61,14 @@
     return slidingMoreThanOneSlideLeftOrRight && notGoingFromFirstToLast && notGoingFromLastToFirst;
   };
 
-  $: isFirstOrLastSlide = (index) => {
+  $: isFirstOrLastSlide = (index: number) => {
     const totalSlides = items.length - 1;
     const isLastSlide = index === totalSlides;
     const isFirstSlide = index === 0;
     return isLastSlide || isFirstSlide;
   };
 
-  $: isSlideVisible = (index) => {
+  $: isSlideVisible = (index: number) => {
     /*
       Show slide if slide is the current slide and the next slide
       OR

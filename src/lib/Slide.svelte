@@ -13,16 +13,11 @@
 
   const dispatch = createEventDispatcher();
 
-  function isEnterOrSpaceKey(event) {
-    const key = parseInt(event.keyCode || event.which || 0, 10);
-    const ENTER_KEY_CODE = 66;
-    const SPACEBAR_KEY_CODE = 62;
-    return key === ENTER_KEY_CODE || key === SPACEBAR_KEY_CODE;
-  }
-
-  function handleSlideKeyUp(event) {
+  function handleSlideKeyUp(event: KeyboardEvent) {
     // a11y support ^_^
-    if (isEnterOrSpaceKey(event)) {
+    const key = event.code;
+    let isEnterOrSpaceKey = key === "Enter" || key === "Space";
+    if (isEnterOrSpaceKey) {
       dispatch('click', event);
     }
   }
@@ -56,7 +51,7 @@
       originalTitle={item.originalTitle}
       sizes={item.sizes}
       loading={item.loading}
-      srcSet={item.srcSet}
+      srcset={item.srcset}
     />
   {:else}
     <div style="height: 100%" />

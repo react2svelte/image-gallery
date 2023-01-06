@@ -30,7 +30,7 @@
     //   const { gallerySlideWrapperHeight } = this.state;
     //   return { height: gallerySlideWrapperHeight };
     // }
-    return {};
+    return '';
   }
 
   $: igThumbnailClasses = items.map((_, index) => getIgThumbnailClass(index, currentIndex));
@@ -41,7 +41,7 @@
 <div class="image-gallery-thumbnails" id="thumbnailWrapper" style={getThumbnailBarHeight()}>
   <nav
     class="image-gallery-thumbnails-container"
-    style={getThumbnailStyle()}
+    style={getThumbnailStyle(isRTL, thumbsTranslate, isThumbnailVertical, useTranslate3D, thumbsStyle)}
     aria-label="Thumbnail Navigation"
     id="thumbnail"
   >

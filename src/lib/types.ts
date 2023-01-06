@@ -14,10 +14,10 @@ export type TItem = {
   original: string;
   originalHeight: number;
   originalWidth: number;
-  loading: string;
+  loading: 'eager' | 'lazy';
   thumbnailHeight: number;
   thumbnailWidth: number;
-  thumbnailLoading: string;
+  thumbnailLoading: 'eager' | 'lazy' | undefined;
   fullscreen: string;
   originalAlt: string;
   originalTitle: string;
@@ -30,6 +30,6 @@ export type TItem = {
   renderItem: Function;
   imageSet: TImageSet[];
   renderThumbInner: Function;
-  srcSet: string;
+  srcset: string;
   sizes: string;
 };

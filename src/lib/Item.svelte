@@ -1,15 +1,15 @@
 <script lang="ts">
   export let original: string;
+  export let fullscreen: string | undefined;  // img source for fullscreen
   export let handleImageLoaded: Function;
   export let description = '';
-  export let fullscreen = '';
   export let isFullscreen = false;
   export let originalAlt = '';
-  export let originalHeight = '';
-  export let originalWidth = '';
+  export let originalHeight: number | undefined;
+  export let originalWidth: number | undefined;
   export let originalTitle = '';
   export let sizes = '';
-  export let srcSet = '';
+  export let srcset = '';
   export let loading: 'eager' | 'lazy' = 'eager';
 
   const itemSrc = isFullscreen ? fullscreen || original : original;
@@ -19,7 +19,7 @@
   class="image-gallery-image"
   src={itemSrc}
   alt={originalAlt}
-  {srcSet}
+  {srcset}
   height={originalHeight}
   width={originalWidth}
   {sizes}
