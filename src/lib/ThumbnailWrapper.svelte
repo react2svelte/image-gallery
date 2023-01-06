@@ -3,7 +3,11 @@
   import Thumbnail from '$lib/Thumbnail.svelte';
   import clsx from 'clsx';
   import { createEventDispatcher } from 'svelte';
-  import { getIgThumbnailClass, getThumbnailStyle } from '$lib/styling';
+  import { getIgThumbnailClass, getThumbnailStyle, getThumbsTranslate } from '$lib/styling';
+  import { debounce } from 'throttle-debounce';
+
+  // self
+  let elem: HTMLElement;
 
   export let items: TItem[];
   export let currentIndex: number;
@@ -13,6 +17,11 @@
   export let thumbsTranslate: number;
   export let thumbsStyle: string;
   export let slideOnThumbnailOver: boolean;
+  export let thumbnailsWrapperWidth: number;
+  export let disableThumbnailScroll: boolean;
+
+  let thumbnailsWrapperHeight = 1000;
+  let thumbsSwipedTranslate: number;
 
   $: isThumbnailVertical = thumbnailPosition === 'left' || thumbnailPosition === 'right';
 
@@ -23,6 +32,52 @@
     useTranslate3D,
     thumbsStyle
   );
+
+  export function initResizeObserver() {
+    let resizeObserver = new ResizeObserver(
+      debounce(50, (entries: ResizeObserverEntry[]) => {
+        if (!entries) return;
+        entries.forEach((entry) => {
+          thumbnailsWrapperHeight = entry.contentRect.height;
+          handleResize();
+        });
+      })
+    );
+    resizeObserver.observe(elem);
+  }
+
+  function handleResize() {
+    thumbsTranslate = getThumbsTranslate(
+      currentIndex,
+      disableThumbnailScroll,
+      thumbnailsWrapperWidth,
+      thumbnailsWrapperHeight,
+      isThumbnailVertical,
+      items.length
+    );
+  }
+
+  export function slideThumbnailBar() {
+    const nextTranslate = -getThumbsTranslate(
+      currentIndex,
+      disableThumbnailScroll,
+      thumbnailsWrapperWidth,
+      thumbnailsWrapperHeight,
+      isThumbnailVertical,
+      items.length
+    );
+    // if (isSwipingThumbnail) {
+    //   return;
+    // }
+
+    if (currentIndex === 0) {
+      thumbsTranslate = 0;
+      thumbsSwipedTranslate = 0;
+    } else {
+      thumbsTranslate = nextTranslate;
+      thumbsSwipedTranslate = nextTranslate;
+    }
+  };
 
   function getThumbnailBarHeight() {
     // TODO
@@ -38,7 +93,7 @@
   const dispatch = createEventDispatcher();
 </script>
 
-<div class="image-gallery-thumbnails" id="thumbnailWrapper" style={getThumbnailBarHeight()}>
+<div class="image-gallery-thumbnails" style={getThumbnailBarHeight()} bind:this={elem}>
   <nav
     class="image-gallery-thumbnails-container"
     style={getThumbnailStyle(isRTL, thumbsTranslate, isThumbnailVertical, useTranslate3D, thumbsStyle)}
