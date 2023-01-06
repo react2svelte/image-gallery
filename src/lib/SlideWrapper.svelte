@@ -17,17 +17,17 @@
   export let showIndex: boolean;
   export let previousIndex: number;
   export let currentIndex: number;
-  export let isTransitioning;
+  export let isTransitioning: boolean;
   export let infinite: boolean;
   export let isRTL: boolean;
   export let isPlaying: boolean;
   export let showPlayButton: boolean;
   export let isFullscreen: boolean;
   export let showFullscreenButton: boolean;
-  export let disableSwipe = false;
-  export let disablePropagation = false;
-  export let currentSlideOffset;
-  export let galleryWidth;
+  export let disableSwipe: boolean;
+  export let stopPropagation: boolean;
+  export let currentSlideOffset: number;
+  export let galleryWidth: number;
 
   $: canSlide = items.length >= 2;
   $: canSlidePrevious = currentIndex > 0;
@@ -118,8 +118,10 @@
     <SwipeWrapper
       {canSlideLeft}
       {canSlideRight}
-      isTransitioning={false}
+      {isTransitioning}
       {galleryWidth}
+      {disableSwipe}
+      {stopPropagation}
       on:slideoffsetchanged={(e) => {
         currentSlideOffset = e.detail;
       }}

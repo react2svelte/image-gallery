@@ -360,6 +360,8 @@
         {currentSlideOffset}
         {isTransitioning}
         {galleryWidth}
+        {disableSwipe}
+        {stopPropagation}
         on:slideleft={() => slideLeft()}
         on:slideright={() => slideRight()}
         on:slidejump={(event) => {
