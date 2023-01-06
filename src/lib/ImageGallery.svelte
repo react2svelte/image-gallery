@@ -4,7 +4,7 @@
   import type { Position, Direction, TItem } from '$lib/types';
   import SlideWrapper from '$lib/SlideWrapper.svelte';
   import ThumbnailWrapper from '$lib/ThumbnailWrapper.svelte';
-  import { onMount } from 'svelte';
+  import { createEventDispatcher, onMount } from 'svelte';
   import { debounce } from 'throttle-debounce';
   import {
     getIgClass,
@@ -63,8 +63,8 @@
   export let isRTL: boolean = false;
   export let useWindowKeyDown = true;
 
-  let currentIndex = 1;
-  let previousIndex = 1;
+  $: currentIndex = startIndex;
+  let previousIndex = startIndex;
   let playPauseIntervalId: number | null = null;
   let isPlaying = false;
   let isFullscreen = false;
@@ -91,6 +91,8 @@
   $: canSlideRight = infinite || (isRTL ? canSlidePrevious : canSlideNext);
 
   $: isThumbnailVertical = thumbnailPosition === 'left' || thumbnailPosition === 'right';
+
+  const dispatch = createEventDispatcher();
 
   function slideLeft() {
     slideTo(isRTL ? 'right' : 'left');
@@ -183,17 +185,17 @@
     if (disableKeyDown) return;
 
     switch (event.code) {
-      case "ArrowLeft":
+      case 'ArrowLeft':
         if (canSlideLeft) {
           slideLeft();
         }
         break;
-      case "ArrowRight":
+      case 'ArrowRight':
         if (canSlideRight) {
           slideRight();
         }
         break;
-      case "Escape":
+      case 'Escape':
         if (isFullscreen && !useBrowserFullscreen) {
           exitFullScreen();
         }
@@ -223,12 +225,9 @@
     if (!playPauseIntervalId) {
       isPlaying = true;
       playPauseIntervalId = window.setInterval(pauseOrPlay, Math.max(slideInterval, slideDuration));
-      /**
-       * TODO dispatch an event instead of calling this handler
-      if (onPlay && shouldCallOnPlay) {
-        onPlay(currentIndex);
+      if (shouldCallOnPlay) {
+        dispatch('play', currentIndex);
       }
-      */
     }
   };
 
@@ -237,12 +236,9 @@
       window.clearInterval(playPauseIntervalId);
       playPauseIntervalId = null;
       isPlaying = false;
-      /**
-       * TODO dispatch an event instead of calling this handler
-      if (onPause && shouldCallOnPause) {
-        onPause(currentIndex);
+      if (shouldCallOnPause) {
+        dispatch('pause', currentIndex);
       }
-      */
     }
   };
 
@@ -376,6 +372,7 @@
         {galleryWidth}
         {disableSwipe}
         {stopPropagation}
+        {indexSeparator}
         on:slideleft={() => slideLeft()}
         on:slideright={() => slideRight()}
         on:slidejump={(event) => {
@@ -420,6 +417,7 @@
         {galleryWidth}
         {disableSwipe}
         {stopPropagation}
+        {indexSeparator}
         on:slideleft={() => slideLeft()}
         on:slideright={() => slideRight()}
         on:slidejump={(event) => {
