@@ -402,6 +402,9 @@
         {indexSeparator}
         {lazyLoad}
         {lazyLoaded}
+        {swipeThreshold}
+        {flickThreshold}
+        {swipingTransitionDuration}
         on:slideleft={() => slideLeft()}
         on:slideright={() => slideRight()}
         on:slidejump={(event) => {
@@ -426,6 +429,7 @@
         {disableThumbnailScroll}
         {stopPropagation}
         {swipingThumbnailTransitionDuration}
+        {disableThumbnailSwipe}
         on:slidejump={(event) => {
           slideToIndex(event.detail);
         }}
@@ -457,6 +461,9 @@
         {indexSeparator}
         {lazyLoad}
         {lazyLoaded}
+        {swipeThreshold}
+        {flickThreshold}
+        {swipingTransitionDuration}
         on:slideleft={() => slideLeft()}
         on:slideright={() => slideRight()}
         on:slidejump={(event) => {

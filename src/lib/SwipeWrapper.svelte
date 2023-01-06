@@ -14,12 +14,13 @@
   let dispatch = createEventDispatcher();
 
   // props
-  export let disableSwipe = false;
-  export let stopPropagation = false;
-  export let swipeThreshold = 30;
-  export let flickThreshold = 0.4;
+  export let disableSwipe: boolean;
+  export let stopPropagation: boolean;
+  export let swipeThreshold: number;
+  export let flickThreshold: number;
+  export let swipingTransitionDuration: number;
   // external state
-  export let isRTL = false;
+  export let isRTL: boolean;
   export let galleryWidth: number;
   export let canSlideLeft: boolean;
   export let canSlideRight: boolean;

@@ -12,6 +12,7 @@
   export let thumbnailPosition: Position;
   export let stopPropagation: boolean;
   export let disableThumbnailScroll: boolean;
+  export let disableThumbnailSwipe: boolean;
 
   export let slideDuration: number;
   export let swipingThumbnailTransitionDuration: number;
@@ -121,6 +122,7 @@
   {thumbsElementScrollHeight}
   {thumbsElementScrollWidth}
   {thumbsSwipedTranslate}
+  {disableThumbnailSwipe}
   on:thumbsslideoffset={(e) => {
     isSwipingThumbnail = true;
     thumbsTranslate = thumbsSwipedTranslate + e.detail;

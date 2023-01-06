@@ -15,7 +15,7 @@
   let dispatch = createEventDispatcher();
 
   // props
-  export let disableThumbnailSwipe = false;
+  export let disableThumbnailSwipe: boolean;
   export let stopPropagation: boolean;
   export let isThumbnailVertical: boolean;
   export let thumbnailPosition: Position;

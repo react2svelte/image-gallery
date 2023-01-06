@@ -31,6 +31,9 @@
   export let indexSeparator: string;
   export let lazyLoad: boolean;
   export let lazyLoaded: boolean[];
+  export let swipeThreshold: number;
+  export let flickThreshold: number;
+  export let swipingTransitionDuration: number;
 
   $: canSlide = items.length >= 2;
   $: canSlidePrevious = currentIndex > 0;
@@ -133,6 +136,10 @@
       {galleryWidth}
       {disableSwipe}
       {stopPropagation}
+      {isRTL}
+      {swipeThreshold}
+      {flickThreshold}
+      {swipingTransitionDuration}
       on:slideoffsetchanged={(e) => {
         currentSlideOffset = e.detail;
       }}
