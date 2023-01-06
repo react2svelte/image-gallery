@@ -3,6 +3,7 @@
   import Thumbnail from '$lib/Thumbnail.svelte';
   import clsx from 'clsx';
   import { createEventDispatcher } from 'svelte';
+  import { getIgThumbnailClass, getThumbnailStyle } from '$lib/styling';
 
   export let items: TItem[];
   export let currentIndex: number;
@@ -15,30 +16,13 @@
 
   $: isThumbnailVertical = thumbnailPosition === 'left' || thumbnailPosition === 'right';
 
-  $: getThumbnailStyle = () => {
-    let translate;
-    const verticalTranslateValue = isRTL ? thumbsTranslate * -1 : thumbsTranslate;
-
-    if (isThumbnailVertical) {
-      translate = `translate(0, ${thumbsTranslate}px)`;
-      if (useTranslate3D) {
-        translate = `translate3d(0, ${thumbsTranslate}px, 0)`;
-      }
-    } else {
-      translate = `translate(${verticalTranslateValue}px, 0)`;
-      if (useTranslate3D) {
-        translate = `translate3d(${verticalTranslateValue}px, 0, 0)`;
-      }
-    }
-    return `
-      WebkitTransform: ${translate};
-      MozTransform: ${translate};
-      msTransform: ${translate};
-      OTransform: ${translate};
-      transform: ${translate};
-      ${thumbsStyle}
-    `;
-  };
+  $: thumbnailStyle = getThumbnailStyle(
+    isRTL,
+    thumbsTranslate,
+    isThumbnailVertical,
+    useTranslate3D,
+    thumbsStyle
+  );
 
   function getThumbnailBarHeight() {
     // TODO
@@ -49,13 +33,7 @@
     return {};
   }
 
-  $: getIgThumbnailClass = (index) => {
-    return clsx(
-      'image-gallery-thumbnail',
-      // thumbnailClass,
-      { active: currentIndex === index }
-    );
-  };
+  $: igThumbnailClasses = items.map((_, index) => getIgThumbnailClass(index, currentIndex));
 
   const dispatch = createEventDispatcher();
 </script>
@@ -75,7 +53,7 @@
       <Thumbnail
         {index}
         {currentIndex}
-        igThumbnailClass={getIgThumbnailClass(index)}
+        igThumbnailClass={igThumbnailClasses[index]}
         {slideOnThumbnailOver}
         {item}
         on:click={() => dispatch('slidejump', index)}

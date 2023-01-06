@@ -5,10 +5,10 @@
   import { createEventDispatcher } from 'svelte';
   import Slide from '$lib/Slide.svelte';
   import Bullet from '$lib/Bullet.svelte';
-  import clsx from 'clsx';
   import Fullscreen from '$lib/Fullscreen.svelte';
   import PlayPause from '$lib/PlayPause.svelte';
   import SwipeWrapper from './SwipeWrapper.svelte';
+  import { getAlignmentClassName, getBulletStyle, getSlideStyle } from '$lib/styling';
 
   export let slideWrapperClass: string;
   export let items: TItem[];
@@ -36,40 +36,6 @@
   $: canSlideRight = infinite || (isRTL ? canSlidePrevious : canSlideNext);
 
   const dispatch = createEventDispatcher();
-
-  $: getAlignmentClassName = (index) => {
-    // Necessary for lazing loading
-    let alignment = '';
-    const leftClassName = 'image-gallery-left';
-    const centerClassName = 'image-gallery-center';
-    const rightClassName = 'image-gallery-right';
-
-    switch (index) {
-      case currentIndex - 1:
-        alignment = ` ${leftClassName}`;
-        break;
-      case currentIndex:
-        alignment = ` ${centerClassName}`;
-        break;
-      case currentIndex + 1:
-        alignment = ` ${rightClassName}`;
-        break;
-      default:
-        break;
-    }
-
-    if (items.length >= 3 && infinite) {
-      if (index === 0 && currentIndex === items.length - 1) {
-        // set first slide as right slide if were sliding right from last slide
-        alignment = ` ${rightClassName}`;
-      } else if (index === items.length - 1 && currentIndex === 0) {
-        // set last slide as left slide if were sliding left from first slide
-        alignment = ` ${leftClassName}`;
-      }
-    }
-
-    return alignment;
-  };
 
   $: slideIsTransitioning = (index) => {
     /*
@@ -118,56 +84,25 @@
     return !slideIsTransitioning(index) || (ignoreIsTransitioning() && !isFirstOrLastSlide(index));
   };
 
-  $: getSlideStyle = (index) => {
-    const baseTranslateX = -100 * currentIndex;
-    const totalSlides = items.length - 1;
+  $: alignmentClasses = items.map((_, index) =>
+    getAlignmentClassName(index, currentIndex, infinite, items.length)
+  );
 
-    // calculates where the other slides belong based on currentIndex
-    // if it is RTL the base line should be reversed
-    let translateX = (baseTranslateX + index * 100) * (isRTL ? -1 : 1) + currentSlideOffset;
+  $: slideStyles = items.map((_, index) =>
+    getSlideStyle(
+      index,
+      currentIndex,
+      items.length,
+      isRTL,
+      currentSlideOffset,
+      infinite,
+      isSlideVisible(index)
+    )
+  );
 
-    if (infinite && items.length > 2) {
-      if (currentIndex === 0 && index === totalSlides) {
-        // make the last slide the slide before the first
-        // if it is RTL the base line should be reversed
-        translateX = -100 * (isRTL ? -1 : 1) + currentSlideOffset;
-      } else if (currentIndex === totalSlides && index === 0) {
-        // make the first slide the slide after the last
-        // if it is RTL the base line should be reversed
-        translateX = 100 * (isRTL ? -1 : 1) + currentSlideOffset;
-      }
-    }
-
-    // Special case when there are only 2 items with infinite on
-    if (infinite && items.length === 2) {
-      translateX = this.getTranslateXForTwoSlide(index);
-    }
-
-    let translate = `translate(${translateX}%, 0)`;
-
-    // if (useTranslate3D) {
-    // eslint-disable-next-line no-constant-condition
-    if (true) {
-      translate = `translate3d(${translateX}%, 0, 0)`;
-    }
-
-    // don't show some slides while transitioning to avoid background transitions
-    const isVisible = isSlideVisible(index);
-
-    return `
-      display: ${isVisible ? 'inherit' : 'none'};
-      WebkitTransform: ${translate};
-      MozTransform: ${translate};
-      msTransform: ${translate};
-      OTransform: ${translate};
-      transform: ${translate};
-      transition: all 450ms ease-out 0s;
-    `; // ...slideStyle;
-  };
-
-  $: getBulletStyle = (index, item) => {
-    return clsx('image-gallery-bullet', item.bulletClass, { active: currentIndex === index });
-  };
+  $: bulletStyles = items.map((item, index) =>
+    getBulletStyle(index, currentIndex, item.bulletClass)
+  );
 </script>
 
 <!-- TODO: we use an id as a replacement for React's "ref" -->
@@ -195,9 +130,9 @@
         {#each items as item, index}
           <Slide
             {index}
-            alignment={getAlignmentClassName(index)}
+            alignment={alignmentClasses[index]}
             originalClass={item.originalClass}
-            slideStyle={getSlideStyle(index)}
+            slideStyle={slideStyles[index]}
             showItem={true}
             {item}
             isFullscreen={false}
@@ -210,9 +145,9 @@
       {#each items as item, index}
         <Slide
           {index}
-          alignment={getAlignmentClassName(index)}
+          alignment={alignmentClasses[index]}
           originalClass={item.originalClass}
-          slideStyle={getSlideStyle(index)}
+          slideStyle={slideStyles[index]}
           showItem={true}
           {item}
           isFullscreen={false}
@@ -230,9 +165,9 @@
   {#if showBullets}
     <div class="image-gallery-bullets">
       <div class="image-gallery-bullets-container" role="navigation" aria-label="Bullet Navigation">
-        {#each items as item, index}
+        {#each items as _, index}
           <Bullet
-            igBulletClass={getBulletStyle(index, item)}
+            igBulletClass={bulletStyles[index]}
             {currentIndex}
             {index}
             on:click={() => dispatch('slidejump', index)}

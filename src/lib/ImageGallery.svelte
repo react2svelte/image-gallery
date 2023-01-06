@@ -6,6 +6,13 @@
   import ThumbnailWrapper from '$lib/ThumbnailWrapper.svelte';
   import { onMount } from 'svelte';
   import { debounce } from 'throttle-debounce';
+  import {
+    getIgClass,
+    getIgContentClass,
+    getSlideWrapperClass,
+    getThumbnailPositionClassName,
+    getThumbsTranslate
+  } from '$lib/styling';
 
   export let flickThreshold: number = 0.4;
   export let items: TItem[];
@@ -81,9 +88,7 @@
   $: canSlideLeft = infinite || (isRTL ? canSlideNext : canSlidePrevious);
   $: canSlideRight = infinite || (isRTL ? canSlidePrevious : canSlideNext);
 
-  function isThumbnailVertical() {
-    return thumbnailPosition === 'left' || thumbnailPosition === 'right';
-  }
+  $: isThumbnailVertical = thumbnailPosition === 'left' || thumbnailPosition === 'right';
 
   function slideLeft() {
     slideTo(isRTL ? 'right' : 'left');
@@ -142,8 +147,15 @@
     }, slideDuration + 50);
   };
 
-  function slideThumbnailBar() {
-    const nextTranslate = -getThumbsTranslate(currentIndex);
+  $: slideThumbnailBar = () => {
+    const nextTranslate = -getThumbsTranslate(
+      currentIndex,
+      disableThumbnailScroll,
+      thumbnailsWrapperWidth,
+      thumbnailsWrapperHeight,
+      isThumbnailVertical,
+      items.length
+    );
     // if (isSwipingThumbnail) {
     //   return;
     // }
@@ -155,40 +167,7 @@
       thumbsTranslate = nextTranslate;
       thumbsSwipedTranslate = nextTranslate;
     }
-  }
-
-  function getThumbsTranslate(indexDifference) {
-    // the scroll space that is hidden on the left & right / top & bottom
-    // when the screen is not large enough to fit all thumbnails
-    let hiddenScroll;
-    const thumbsElement = document.getElementById('thumbnail');
-    const thumbsWrapper = document.getElementById('thumbnailWrapper');
-    // TODO use the state values that are getting updated by the ResizeObserver
-    const { width: thumbnailsWrapperWidth, height: thumbnailsWrapperHeight } =
-      thumbsWrapper.getBoundingClientRect();
-
-    if (disableThumbnailScroll) return 0;
-
-    if (thumbsElement) {
-      // total scroll required to see the last thumbnail
-      if (isThumbnailVertical()) {
-        if (thumbsElement.scrollHeight <= thumbnailsWrapperHeight) {
-          return 0;
-        }
-        hiddenScroll = thumbsElement.scrollHeight - thumbnailsWrapperHeight;
-      } else {
-        if (thumbsElement.scrollWidth <= thumbnailsWrapperWidth || thumbnailsWrapperWidth <= 0) {
-          return 0;
-        }
-        hiddenScroll = thumbsElement.scrollWidth - thumbnailsWrapperWidth;
-      }
-
-      // scroll-x or y required per index change
-      const perIndexScroll = hiddenScroll / (items.length - 1);
-      return indexDifference * perIndexScroll;
-    }
-    return 0;
-  }
+  };
 
   function handleKeyDown(event) {
     // keep track of mouse vs keyboard usage for a11y
@@ -286,44 +265,9 @@
     }
   };
 
-  const getThumbnailPositionClassName = (thumbnailPosition) => {
-    // get the specific thumbnailPosition className
-    const leftClassName = 'image-gallery-thumbnails-left';
-    const rightClassName = 'image-gallery-thumbnails-right';
-    const bottomClassName = 'image-gallery-thumbnails-bottom';
-    const topClassName = 'image-gallery-thumbnails-top';
-
-    switch (thumbnailPosition) {
-      case 'left':
-        thumbnailPosition = ` ${leftClassName}`;
-        break;
-      case 'right':
-        thumbnailPosition = ` ${rightClassName}`;
-        break;
-      case 'bottom':
-        thumbnailPosition = ` ${bottomClassName}`;
-        break;
-      case 'top':
-        thumbnailPosition = ` ${topClassName}`;
-        break;
-      default:
-        break;
-    }
-
-    return thumbnailPosition;
-  };
-
-  $: igClass = clsx('image-gallery', additionalClass, { 'fullscreen-modal': modalFullscreen });
-  $: igContentClass = clsx(
-    'image-gallery-content',
-    getThumbnailPositionClassName(thumbnailPosition),
-    { fullscreen: isFullscreen }
-  );
-  $: slideWrapperClass = clsx(
-    'image-gallery-slide-wrapper',
-    getThumbnailPositionClassName(thumbnailPosition),
-    { 'image-gallery-rtl': isRTL }
-  );
+  $: igClass = getIgClass(modalFullscreen, additionalClass);
+  $: igContentClass = getIgContentClass(isFullscreen, thumbnailPosition);
+  $: slideWrapperClass = getSlideWrapperClass(isRTL, thumbnailPosition);
 
   onMount(async () => {
     const slideWrapperRef = document.getElementById('slideWrapper');
@@ -333,7 +277,7 @@
     // TODO: implement handleScreenChange()
   });
 
-  $: initSlideWrapperResizeObserver = (element: HTMLElement) => {
+  const initSlideWrapperResizeObserver = (element: HTMLElement) => {
     if (!element) {
       return;
     }
@@ -350,7 +294,7 @@
     resizeSlideWrapperObserver.observe(element);
   };
 
-  $: initThumbnailWrapperResizeObserver = (element: HTMLElement) => {
+  const initThumbnailWrapperResizeObserver = (element: HTMLElement) => {
     if (!element) {
       return;
     } // thumbnails are not always available
@@ -384,7 +328,14 @@
     }
 
     // Adjust thumbnail container when thumbnail width or height is adjusted
-    thumbsTranslate = getThumbsTranslate(currentIndex);
+    thumbsTranslate = getThumbsTranslate(
+      currentIndex,
+      disableThumbnailScroll,
+      thumbnailsWrapperWidth,
+      thumbnailsWrapperHeight,
+      isThumbnailVertical,
+      items.length
+    );
   };
 </script>
 
