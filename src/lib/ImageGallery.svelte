@@ -393,8 +393,8 @@
         on:slidejump={(event) => {
           slideToIndex(event.detail);
         }}
-        on:thumbnailmouseover={slideOnThumbnailOver && onThumbnailMouseOver}
-        on:thumbnailmouseleave={slideOnThumbnailOver && onThumbnailMouseLeave}
+        on:thumbnailmouseover={slideOnThumbnailOver ? onThumbnailMouseOver : undefined}
+        on:thumbnailmouseleave={slideOnThumbnailOver ? onThumbnailMouseLeave : undefined}
       />
     {/if}
     {#if thumbnailPosition === 'top' || thumbnailPosition === 'left'}
