@@ -35,7 +35,7 @@
   export let startIndex: number = 0;
   export let slideDuration: number = 450;
   export let slideInterval: number = 3000;
-  export let slideOnThumbnailOver: boolean = true;
+  export let slideOnThumbnailOver: boolean = false;
   export let swipeThreshold: number = 30;
   export let swipingTransitionDuration: number = 0;
   export let swipingThumbnailTransitionDuration: number = 0;
@@ -280,6 +280,9 @@
     const thumbnailWrapperRef = document.getElementById('thumbnailWrapper')!;
     initThumbnailWrapperResizeObserver(thumbnailWrapperRef);
     // TODO: implement handleScreenChange()
+    if (autoPlay) {
+      play();
+    }
   });
 
   const initSlideWrapperResizeObserver = (element: HTMLElement) => {
