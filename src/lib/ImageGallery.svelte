@@ -40,11 +40,6 @@
   export let swipingTransitionDuration: number = 0;
   export let swipingThumbnailTransitionDuration: number = 0;
   /** TODO
-  export let onSlide: Function = null;
-  export let onBeforeSlide: Function = null;
-  export let onScreenChange: Function = null;
-  export let onPause: Function = null;
-  export let onPlay: Function = null;
   export let onClick: Function = null;
   export let onImageLoad: Function = null;
   export let onImageError: Function = null;
@@ -121,12 +116,9 @@
       } else if (index > slideCount) {
         nextIndex = 0;
       }
-      /**
-       * TODO dispatch an event instead of calling this handler
-      if (onBeforeSlide && nextIndex !== currentIndex) {
-        onBeforeSlide(nextIndex);
+      if (nextIndex !== currentIndex) {
+        dispatch('beforeslide', { nextIndex });
       }
-      */
 
       isTransitioning = nextIndex !== currentIndex;
       previousIndex = currentIndex;
@@ -144,12 +136,7 @@
         // reset swiping thumbnail after transitioning to new slide,
         // so we can resume thumbnail auto translate
         isSwipingThumbnail = false;
-        /**
-         * TODO dispatch an event instead of calling this handler
-        if (onSlide) {
-          onSlide(currentIndex);
-        }
-        */
+        dispatch('slide', { currentIndex });
       }
     }, slideDuration + 50);
   };
@@ -228,11 +215,13 @@
 
   $: fullScreen = () => {
     if (useBrowserFullscreen) {
-      document.documentElement.requestFullscreen();
+      const imageGalleryRef = document.getElementById('imageGallery')!;
+      imageGalleryRef.requestFullscreen();
     } else {
       modalFullscreen = true;
     }
     isFullscreen = true;
+    dispatch('screenchange', { fullscreen: true });
   };
 
   $: exitFullScreen = () => {
@@ -243,6 +232,7 @@
         modalFullscreen = false;
       }
       isFullscreen = false;
+      dispatch('screenchange', { fullscreen: false });
     }
   };
 
@@ -275,6 +265,21 @@
     }
   };
 
+  $: handleScreenChange = () => {
+    /*
+      handles screen change events that the browser triggers e.g. esc key
+    */
+    const fullScreenElement = document.fullscreenElement;
+
+    // check if screenchange element is the gallery
+    const imageGalleryRef = document.getElementById('imageGallery');
+    const _isFullscreen = imageGalleryRef === fullScreenElement;
+    dispatch('screenchange', { fullscreen: _isFullscreen });
+    if (useBrowserFullscreen) {
+      isFullscreen = _isFullscreen;
+    }
+  };
+
   $: igClass = getIgClass(modalFullscreen, additionalClass);
   $: igContentClass = getIgContentClass(isFullscreen, thumbnailPosition);
   $: slideWrapperClass = getSlideWrapperClass(isRTL, thumbnailPosition);
@@ -284,7 +289,6 @@
     initSlideWrapperResizeObserver(slideWrapperRef);
     const thumbnailWrapperRef = document.getElementById('thumbnailWrapper')!;
     initThumbnailWrapperResizeObserver(thumbnailWrapperRef);
-    // TODO: implement handleScreenChange()
     if (autoPlay) {
       play();
     }
@@ -468,4 +472,7 @@
   </div>
 </div>
 
-<svelte:window on:keydown={useWindowKeyDown ? handleKeyDown : undefined} />
+<svelte:window
+  on:keydown={useWindowKeyDown ? handleKeyDown : undefined}
+  on:fullscreenchange={handleScreenChange}
+/>
