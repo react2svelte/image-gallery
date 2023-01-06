@@ -149,6 +149,7 @@
             showItem={showItems[index]}
             {item}
             isFullscreen={false}
+            on:imageerror
           />
         {/each}
       </div>
@@ -164,6 +165,7 @@
           showItem={showItems[index]}
           {item}
           isFullscreen={false}
+          on:imageerror
         />
       {/each}
     </div>

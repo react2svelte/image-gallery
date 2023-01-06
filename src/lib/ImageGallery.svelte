@@ -29,7 +29,7 @@
   export let disableSwipe: boolean = false;
   export let disableThumbnailSwipe: boolean = false;
   export let useBrowserFullscreen: boolean = true;
-  export let onErrorImageURL: string = '';
+  export let onErrorImageURL: string | undefined = undefined;
   export let indexSeparator: string = '/';
   export let thumbnailPosition: Position = 'bottom';
   export let startIndex: number = 0;
@@ -245,6 +245,13 @@
     }
   };
 
+  $: handleImageError = (customEvent: { detail: ErrorEvent & { target: { src: string } } }) => {
+    const event = customEvent.detail;
+    if (onErrorImageURL && !event.target.src.includes(onErrorImageURL)) {
+      event.target.src = onErrorImageURL;
+    }
+  };
+
   $: igClass = getIgClass(modalFullscreen, additionalClass);
   $: igContentClass = getIgContentClass(isFullscreen, thumbnailPosition);
   $: slideWrapperClass = getSlideWrapperClass(isRTL, thumbnailPosition);
@@ -377,6 +384,7 @@
         on:playtoggle={togglePlay}
         on:fullscreentoggle={toggleFullscreen}
         on:lazyload={onLazyLoad}
+        on:imageerror={handleImageError}
       />
     {/if}
     {#if showThumbnails}
@@ -395,6 +403,7 @@
         }}
         on:thumbnailmouseover={slideOnThumbnailOver ? onThumbnailMouseOver : undefined}
         on:thumbnailmouseleave={slideOnThumbnailOver ? onThumbnailMouseLeave : undefined}
+        on:imageerror={handleImageError}
       />
     {/if}
     {#if thumbnailPosition === 'top' || thumbnailPosition === 'left'}
@@ -428,6 +437,7 @@
         on:playtoggle={togglePlay}
         on:fullscreentoggle={toggleFullscreen}
         on:lazyload={onLazyLoad}
+        on:imageerror={handleImageError}
       />
     {/if}
   </div>

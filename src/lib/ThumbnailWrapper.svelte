@@ -115,6 +115,7 @@
         on:click={() => dispatch('slidejump', index)}
         on:mouseover={() => dispatch('thumbnailmouseover', index)}
         on:mouseleave={() => dispatch('thumbnailmouseleave', index)}
+        on:imageerror
       />
     {/each}
   </nav>

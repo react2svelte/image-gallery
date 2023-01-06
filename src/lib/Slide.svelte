@@ -52,6 +52,7 @@
       sizes={item.sizes}
       loading={item.loading}
       srcset={item.srcset}
+      on:imageerror
     />
   {:else}
     <div style="height: 100%" />
