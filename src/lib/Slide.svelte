@@ -16,7 +16,7 @@
   function handleSlideKeyUp(event: KeyboardEvent) {
     // a11y support ^_^
     const key = event.code;
-    let isEnterOrSpaceKey = key === "Enter" || key === "Space";
+    let isEnterOrSpaceKey = key === 'Enter' || key === 'Space';
     if (isEnterOrSpaceKey) {
       dispatch('click', event);
     }

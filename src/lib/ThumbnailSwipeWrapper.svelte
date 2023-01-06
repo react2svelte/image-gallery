@@ -40,7 +40,6 @@
   }
 
   function handleThumbnailSwiping({ event, absX, absY, dir }: SwipeEventData) {
-
     if (isThumbnailVertical) {
       // if the initial swiping is left/right, prevent moving the thumbnail bar until swipe ends
       if ((dir === LEFT || dir === RIGHT || swipingLeftRight) && !swipingUpDown) {
@@ -80,8 +79,7 @@
 
     if (isThumbnailVertical) {
       thumbsTranslate = thumbsSwipedTranslate + slideY;
-      totalSwipeableLength =
-        thumbsElementScrollHeight - thumbnailsWrapperHeight + emptySpaceMargin;
+      totalSwipeableLength = thumbsElementScrollHeight - thumbnailsWrapperHeight + emptySpaceMargin;
       hasSwipedPassedEnd = Math.abs(thumbsTranslate) > totalSwipeableLength;
       hasSwipedPassedStart = thumbsTranslate > emptySpaceMargin;
       isThumbnailBarSmallerThanContainer = thumbsElementScrollHeight <= thumbnailsWrapperHeight;
@@ -110,7 +108,6 @@
 
     if (stopPropagation) event.stopPropagation();
 
-
     if (isThumbnailVertical) {
       dispatch('thumbsslidey', slideY);
     } else {
@@ -129,7 +126,6 @@
         transition: `transform ${swipingThumbnailTransitionDuration}ms ease-out`
       };
      */
-
   }
 
   function handleOnThumbnailSwiped() {

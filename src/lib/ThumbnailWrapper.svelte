@@ -41,7 +41,13 @@
 <div class="image-gallery-thumbnails" id="thumbnailWrapper" style={getThumbnailBarHeight()}>
   <nav
     class="image-gallery-thumbnails-container"
-    style={getThumbnailStyle(isRTL, thumbsTranslate, isThumbnailVertical, useTranslate3D, thumbsStyle)}
+    style={getThumbnailStyle(
+      isRTL,
+      thumbsTranslate,
+      isThumbnailVertical,
+      useTranslate3D,
+      thumbsStyle
+    )}
     aria-label="Thumbnail Navigation"
     id="thumbnail"
   >
