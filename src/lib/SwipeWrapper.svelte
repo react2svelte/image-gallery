@@ -7,9 +7,8 @@
 
 -->
 <script lang="ts">
-  import { swipable } from '@react2svelte/swipable';
+  import { swipable, UP, DOWN, LEFT, RIGHT } from '@react2svelte/swipable';
   import type { SwipeEventData } from '@react2svelte/swipable';
-  import { UP, DOWN, LEFT, RIGHT } from '@react2svelte/swipable';
   import { createEventDispatcher } from 'svelte';
 
   let dispatch = createEventDispatcher();
@@ -17,7 +16,6 @@
   // props
   export let disableSwipe = false;
   export let stopPropagation = false;
-  export let swipingTransitionDuration = 0;
   export let swipeThreshold = 30;
   export let flickThreshold = 0.4;
   // external state

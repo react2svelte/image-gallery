@@ -16,7 +16,6 @@
 
   // props
   export let disableThumbnailSwipe = false;
-  export let swipingThumbnailTransitionDuration: number;
   export let stopPropagation: boolean;
   export let isThumbnailVertical: boolean;
   export let thumbnailPosition: Position;
@@ -119,37 +118,12 @@
     } else {
       dispatch('thumbsslideoffset', slideX);
     }
-    /**
-      TODO
-
-
-      this.setState({
-        thumbsTranslate,
-        thumbsStyle: swipingTransition
-      });
-
-      const swipingTransition = {
-        transition: `transform ${swipingThumbnailTransitionDuration}ms ease-out`
-      };
-     */
   }
 
   function handleOnThumbnailSwiped() {
     if (disableThumbnailSwipe) return;
     resetSwipingDirection();
     dispatch('thumbnailswiped');
-    /** 
-      TODO
-
-    thumbsSwipedTranslate = thumbsTranslate;
-
-    const { thumbsTranslate } = this.state;
-    const { slideDuration } = this.props;
-
-      this.setState({
-        thumbsStyle: { transition: `all ${slideDuration}ms ease-out` }
-      });
-    */
   }
 
   let cls = clsx(

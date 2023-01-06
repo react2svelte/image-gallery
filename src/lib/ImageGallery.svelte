@@ -423,7 +423,6 @@
         {isRTL}
         {thumbnailPosition}
         {slideDuration}
-        {slideOnThumbnailOver}
         {disableThumbnailScroll}
         {stopPropagation}
         {swipingThumbnailTransitionDuration}

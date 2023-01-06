@@ -11,15 +11,13 @@
   export let isRTL: boolean;
   export let thumbnailPosition: Position;
   export let stopPropagation: boolean;
+  export let disableThumbnailScroll: boolean;
 
   export let slideDuration: number;
   export let swipingThumbnailTransitionDuration: number;
 
   let isSwipingThumbnail = false; // currently swiping?
   let isSwipedThumbnail = false; // swiped? relevant for auto-play
-
-  export let slideOnThumbnailOver: boolean;
-  export let disableThumbnailScroll: boolean;
 
   // the thumbnails container element
   let thumbnails: HTMLElement;
@@ -122,7 +120,6 @@
   {thumbnailsWrapperWidth}
   {thumbsElementScrollHeight}
   {thumbsElementScrollWidth}
-  {swipingThumbnailTransitionDuration}
   {thumbsSwipedTranslate}
   on:thumbsslideoffset={(e) => {
     isSwipingThumbnail = true;
