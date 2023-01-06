@@ -7,9 +7,9 @@
 
 -->
 <script lang="ts">
-  import { swipable } from '@react2svelte/swipable/main';
-  import type { SwipeEventData } from '@react2svelte/swipable/types';
-  import { UP, DOWN, LEFT, RIGHT } from '@react2svelte/swipable/types';
+  import { swipable } from '@react2svelte/swipable';
+  import type { SwipeEventData } from '@react2svelte/swipable';
+  import { UP, DOWN, LEFT, RIGHT } from '@react2svelte/swipable';
   import { createEventDispatcher } from 'svelte';
 
   let dispatch = createEventDispatcher();
