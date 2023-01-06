@@ -149,7 +149,8 @@
             showItem={showItems[index]}
             {item}
             isFullscreen={false}
-            on:imageerror
+            on:imageload={(event) => dispatch('imageload', { index, event })}
+            on:imageerror={(event) => dispatch('imageerror', { index, event })}
           />
         {/each}
       </div>
@@ -165,7 +166,8 @@
           showItem={showItems[index]}
           {item}
           isFullscreen={false}
-          on:imageerror
+          on:imageload={(event) => dispatch('imageload', { index, event })}
+          on:imageerror={(event) => dispatch('imageerror', { index, event })}
         />
       {/each}
     </div>

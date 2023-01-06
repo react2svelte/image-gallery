@@ -78,6 +78,7 @@
   let resizeThumbnailWrapperObserver: ResizeObserver;
   let thumbnailMouseOverTimer: number | null = null;
   let lazyLoaded: boolean[] = [];
+  let imageLoaded: boolean[] = [];
 
   let thumbnailWrapper: ThumbnailWrapper;
 
@@ -245,8 +246,30 @@
     }
   };
 
-  $: handleImageError = (customEvent: { detail: ErrorEvent & { target: { src: string } } }) => {
-    const event = customEvent.detail;
+  $: handleImageLoad = (customEvent: {
+    detail: {
+      index: number;
+      event: Event;
+    };
+  }) => {
+    const index = customEvent.detail.index;
+    const event = customEvent.detail.event;
+    const imageExists = imageLoaded[index];
+    // TODO
+    // if (!imageExists && onImageLoad) {
+    //   imageLoaded[index] = true; // prevent from call again
+    //   // image just loaded, call onImageLoad
+    //   onImageLoad(event);
+    // }
+  };
+
+  $: handleImageError = (customEvent: {
+    detail: {
+      index: number;
+      event: ErrorEvent & { target: { src: string } };
+    };
+  }) => {
+    const event = customEvent.detail.event;
     if (onErrorImageURL && !event.target.src.includes(onErrorImageURL)) {
       event.target.src = onErrorImageURL;
     }
@@ -384,6 +407,7 @@
         on:playtoggle={togglePlay}
         on:fullscreentoggle={toggleFullscreen}
         on:lazyload={onLazyLoad}
+        on:imageload={handleImageLoad}
         on:imageerror={handleImageError}
       />
     {/if}
@@ -437,6 +461,7 @@
         on:playtoggle={togglePlay}
         on:fullscreentoggle={toggleFullscreen}
         on:lazyload={onLazyLoad}
+        on:imageload={handleImageLoad}
         on:imageerror={handleImageError}
       />
     {/if}
