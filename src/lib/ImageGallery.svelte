@@ -29,7 +29,7 @@
   export let disableSwipe: boolean = false;
   export let disableThumbnailSwipe: boolean = false;
   export let useBrowserFullscreen: boolean = true;
-  export let onErrorImageURL: string = '';
+  export let onErrorImageURL: string | undefined = undefined;
   export let indexSeparator: string = '/';
   export let thumbnailPosition: Position = 'bottom';
   export let startIndex: number = 0;
@@ -40,11 +40,6 @@
   export let swipingTransitionDuration: number = 0;
   export let swipingThumbnailTransitionDuration: number = 0;
   /** TODO
-  export let onSlide: Function = null;
-  export let onBeforeSlide: Function = null;
-  export let onScreenChange: Function = null;
-  export let onPause: Function = null;
-  export let onPlay: Function = null;
   export let onClick: Function = null;
   export let onImageLoad: Function = null;
   export let onImageError: Function = null;
@@ -77,6 +72,7 @@
   let resizeThumbnailWrapperObserver: ResizeObserver;
   let thumbnailMouseOverTimer: number | null = null;
   let lazyLoaded: boolean[] = [];
+  let imageLoaded: boolean[] = [];
 
   let thumbnailWrapper: ThumbnailWrapper;
 
@@ -119,12 +115,9 @@
       } else if (index > slideCount) {
         nextIndex = 0;
       }
-      /**
-       * TODO dispatch an event instead of calling this handler
-      if (onBeforeSlide && nextIndex !== currentIndex) {
-        onBeforeSlide(nextIndex);
+      if (nextIndex !== currentIndex) {
+        dispatch('beforeslide', { nextIndex });
       }
-      */
 
       isTransitioning = nextIndex !== currentIndex;
       previousIndex = currentIndex;
@@ -142,12 +135,7 @@
         // reset swiping thumbnail after transitioning to new slide,
         // so we can resume thumbnail auto translate
         thumbnailWrapper.resetSwipingThumbnail();
-        /**
-         * TODO dispatch an event instead of calling this handler
-        if (onSlide) {
-          onSlide(currentIndex);
-        }
-        */
+        dispatch('slide', { currentIndex });
       }
     }, slideDuration + 50);
   };
@@ -226,11 +214,13 @@
 
   $: fullScreen = () => {
     if (useBrowserFullscreen) {
-      document.documentElement.requestFullscreen();
+      const imageGalleryRef = document.getElementById('imageGallery')!;
+      imageGalleryRef.requestFullscreen();
     } else {
       modalFullscreen = true;
     }
     isFullscreen = true;
+    dispatch('screenchange', { fullscreen: true });
   };
 
   $: exitFullScreen = () => {
@@ -241,6 +231,51 @@
         modalFullscreen = false;
       }
       isFullscreen = false;
+      dispatch('screenchange', { fullscreen: false });
+    }
+  };
+
+  $: handleImageLoad = (customEvent: {
+    detail: {
+      index: number;
+      event: Event;
+    };
+  }) => {
+    const index = customEvent.detail.index;
+    const event = customEvent.detail.event;
+    const imageExists = imageLoaded[index];
+    // TODO
+    // if (!imageExists && onImageLoad) {
+    //   imageLoaded[index] = true; // prevent from call again
+    //   // image just loaded, call onImageLoad
+    //   onImageLoad(event);
+    // }
+  };
+
+  $: handleImageError = (customEvent: {
+    detail: {
+      index: number;
+      event: ErrorEvent & { target: { src: string } };
+    };
+  }) => {
+    const event = customEvent.detail.event;
+    if (onErrorImageURL && !event.target.src.includes(onErrorImageURL)) {
+      event.target.src = onErrorImageURL;
+    }
+  };
+
+  $: handleScreenChange = () => {
+    /*
+      handles screen change events that the browser triggers e.g. esc key
+    */
+    const fullScreenElement = document.fullscreenElement;
+
+    // check if screenchange element is the gallery
+    const imageGalleryRef = document.getElementById('imageGallery');
+    const _isFullscreen = imageGalleryRef === fullScreenElement;
+    dispatch('screenchange', { fullscreen: _isFullscreen });
+    if (useBrowserFullscreen) {
+      isFullscreen = _isFullscreen;
     }
   };
 
@@ -253,7 +288,6 @@
     initSlideWrapperResizeObserver(slideWrapperRef);
     const thumbnailWrapperRef = document.getElementById('thumbnailWrapper')!;
     initThumbnailWrapperResizeObserver(thumbnailWrapperRef);
-    // TODO: implement handleScreenChange()
     if (autoPlay) {
       play();
     }
@@ -376,6 +410,8 @@
         on:playtoggle={togglePlay}
         on:fullscreentoggle={toggleFullscreen}
         on:lazyload={onLazyLoad}
+        on:imageload={handleImageLoad}
+        on:imageerror={handleImageError}
       />
     {/if}
     {#if showThumbnails}
@@ -396,6 +432,7 @@
         }}
         on:thumbnailmouseover={slideOnThumbnailOver ? onThumbnailMouseOver : undefined}
         on:thumbnailmouseleave={slideOnThumbnailOver ? onThumbnailMouseLeave : undefined}
+        on:imageerror={handleImageError}
       />
     {/if}
     {#if thumbnailPosition === 'top' || thumbnailPosition === 'left'}
@@ -429,9 +466,14 @@
         on:playtoggle={togglePlay}
         on:fullscreentoggle={toggleFullscreen}
         on:lazyload={onLazyLoad}
+        on:imageload={handleImageLoad}
+        on:imageerror={handleImageError}
       />
     {/if}
   </div>
 </div>
 
-<svelte:window on:keydown={useWindowKeyDown ? handleKeyDown : undefined} />
+<svelte:window
+  on:keydown={useWindowKeyDown ? handleKeyDown : undefined}
+  on:fullscreenchange={handleScreenChange}
+/>

@@ -1,7 +1,8 @@
 <script lang="ts">
-  export let original: string;
+  import { createEventDispatcher } from 'svelte';
+
+  export let original: string | undefined;
   export let fullscreen: string | undefined; // img source for fullscreen
-  export let handleImageLoaded: Function;
   export let description = '';
   export let isFullscreen = false;
   export let originalAlt = '';
@@ -13,6 +14,8 @@
   export let loading: 'eager' | 'lazy' = 'eager';
 
   const itemSrc = isFullscreen ? fullscreen || original : original;
+
+  const dispatch = createEventDispatcher();
 </script>
 
 <img
@@ -24,7 +27,8 @@
   width={originalWidth}
   {sizes}
   title={originalTitle}
-  on:load={(event) => handleImageLoaded(event, original)}
+  on:load={(event) => dispatch('imageload', event)}
+  on:error={(event) => dispatch('imageerror', event)}
   {loading}
 />
 {#if description}

@@ -8,7 +8,7 @@ export type TImage = {
 
 export type TImageSet = TImage[];
 
-export type TItem = {
+export type TItem = Partial<{
   bulletClass: string;
   bulletOnClick: Function;
   description: string;
@@ -33,4 +33,4 @@ export type TItem = {
   renderThumbInner: Function;
   srcset: string;
   sizes: string;
-};
+}>;

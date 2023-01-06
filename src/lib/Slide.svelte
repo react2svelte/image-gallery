@@ -5,7 +5,7 @@
 
   export let index: number;
   export let alignment: string;
-  export let originalClass: string;
+  export let originalClass: string | undefined;
   export let slideStyle: string;
   export let showItem: boolean;
   export let item: TItem;
@@ -42,7 +42,6 @@
     <Item
       description={item.description}
       fullscreen={item.fullscreen}
-      handleImageLoaded={() => dispatch('imageloaded')}
       {isFullscreen}
       original={item.original}
       originalAlt={item.originalAlt}
@@ -52,6 +51,8 @@
       sizes={item.sizes}
       loading={item.loading}
       srcset={item.srcset}
+      on:imageload
+      on:imageerror
     />
   {:else}
     <div style="height: 100%" />

@@ -108,7 +108,7 @@
   );
 
   $: showItems = items.map((_, index) => {
-    const showItem = !lazyLoad || alignmentClasses[index] || lazyLoaded[index];
+    const showItem = !lazyLoad || !!alignmentClasses[index] || lazyLoaded[index];
     if (showItem && lazyLoad && !lazyLoaded[index]) {
       dispatch('lazyload', index);
     }
@@ -149,6 +149,8 @@
             showItem={showItems[index]}
             {item}
             isFullscreen={false}
+            on:imageload={(event) => dispatch('imageload', { index, event })}
+            on:imageerror={(event) => dispatch('imageerror', { index, event })}
           />
         {/each}
       </div>
@@ -164,6 +166,8 @@
           showItem={showItems[index]}
           {item}
           isFullscreen={false}
+          on:imageload={(event) => dispatch('imageload', { index, event })}
+          on:imageerror={(event) => dispatch('imageerror', { index, event })}
         />
       {/each}
     </div>

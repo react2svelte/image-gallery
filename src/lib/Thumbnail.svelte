@@ -32,6 +32,7 @@
       alt={item.thumbnailAlt}
       title={item.thumbnailTitle}
       loading={item.thumbnailLoading}
+      on:error={(event) => dispatch('imageerror', event)}
     />
     {#if item.thumbnailLabel}
       <div class="image-gallery-thumbnail-label">

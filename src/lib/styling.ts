@@ -110,7 +110,7 @@ export const getSlideStyle = (
     `; // ...slideStyle;
 };
 
-export const getBulletStyle = (index: number, currentIndex: number, itemBulletClass: string) => {
+export const getBulletStyle = (index: number, currentIndex: number, itemBulletClass?: string) => {
   return clsx('image-gallery-bullet', itemBulletClass, { active: currentIndex === index });
 };
 
