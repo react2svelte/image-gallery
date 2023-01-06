@@ -1,6 +1,5 @@
 <script lang="ts">
   import '../app.scss';
-  import clsx from 'clsx';
   import type { Position, Direction, TItem } from '$lib/types';
   import SlideWrapper from '$lib/SlideWrapper.svelte';
   import ThumbnailWrapper from '$lib/ThumbnailWrapper.svelte';
@@ -36,7 +35,7 @@
   export let startIndex: number = 0;
   export let slideDuration: number = 450;
   export let slideInterval: number = 3000;
-  export let slideOnThumbnailOver: boolean = false;
+  export let slideOnThumbnailOver: boolean = true;
   export let swipeThreshold: number = 30;
   export let swipingTransitionDuration: number = 0;
   export let swipingThumbnailTransitionDuration: number = 0;
@@ -79,6 +78,7 @@
   let thumbnailsWrapperHeight = 1000;
   let resizeSlideWrapperObserver: ResizeObserver;
   let resizeThumbnailWrapperObserver: ResizeObserver;
+  let thumbnailMouseOverTimer: number | null = null;
 
   let thumbsTranslate = 0;
   let thumbsSwipedTranslate = 0;
@@ -342,6 +342,28 @@
       items.length
     );
   };
+
+  $: onThumbnailMouseOver = (event: { detail: number }) => {
+    const index = event.detail;
+    if (thumbnailMouseOverTimer) {
+      window.clearTimeout(thumbnailMouseOverTimer);
+      thumbnailMouseOverTimer = null;
+    }
+    thumbnailMouseOverTimer = window.setTimeout(() => {
+      slideToIndex(index);
+      pause();
+    }, 300);
+  };
+
+  $: onThumbnailMouseLeave = () => {
+    if (thumbnailMouseOverTimer) {
+      window.clearTimeout(thumbnailMouseOverTimer);
+      thumbnailMouseOverTimer = null;
+      if (autoPlay) {
+        play();
+      }
+    }
+  };
 </script>
 
 <!-- TODO: we use an id as a replacement for React's "ref" -->
@@ -391,10 +413,11 @@
         {thumbnailPosition}
         {thumbsTranslate}
         {thumbsStyle}
-        {slideOnThumbnailOver}
         on:slidejump={(event) => {
           slideToIndex(event.detail);
         }}
+        on:thumbnailmouseover={slideOnThumbnailOver && onThumbnailMouseOver}
+        on:thumbnailmouseleave={slideOnThumbnailOver && onThumbnailMouseLeave}
       />
     {/if}
     {#if thumbnailPosition === 'top' || thumbnailPosition === 'left'}

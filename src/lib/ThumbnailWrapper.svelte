@@ -1,7 +1,6 @@
 <script lang="ts">
   import type { Position, TItem } from '$lib/types';
   import Thumbnail from '$lib/Thumbnail.svelte';
-  import clsx from 'clsx';
   import { createEventDispatcher } from 'svelte';
   import { getIgThumbnailClass, getThumbnailStyle } from '$lib/styling';
 
@@ -12,7 +11,6 @@
   export let thumbnailPosition: Position;
   export let thumbsTranslate: number;
   export let thumbsStyle: string;
-  export let slideOnThumbnailOver: boolean;
 
   $: isThumbnailVertical = thumbnailPosition === 'left' || thumbnailPosition === 'right';
 
@@ -60,9 +58,10 @@
         {index}
         {currentIndex}
         igThumbnailClass={igThumbnailClasses[index]}
-        {slideOnThumbnailOver}
         {item}
         on:click={() => dispatch('slidejump', index)}
+        on:mouseover={() => dispatch('thumbnailmouseover', index)}
+        on:mouseleave={() => dispatch('thumbnailmouseleave', index)}
       />
     {/each}
   </nav>
