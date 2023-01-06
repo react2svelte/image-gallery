@@ -29,6 +29,8 @@
   export let currentSlideOffset: number;
   export let galleryWidth: number;
   export let indexSeparator: string;
+  export let lazyLoad: boolean;
+  export let lazyLoaded: boolean[];
 
   $: canSlide = items.length >= 2;
   $: canSlidePrevious = currentIndex > 0;
@@ -104,6 +106,14 @@
   $: bulletStyles = items.map((item, index) =>
     getBulletStyle(index, currentIndex, item.bulletClass)
   );
+
+  $: showItems = items.map((_, index) => {
+    const showItem = !lazyLoad || alignmentClasses[index] || lazyLoaded[index];
+    if (showItem && lazyLoad && !lazyLoaded[index]) {
+      dispatch('lazyload', index);
+    }
+    return showItem;
+  });
 </script>
 
 <!-- TODO: we use an id as a replacement for React's "ref" -->
@@ -136,7 +146,7 @@
             alignment={alignmentClasses[index]}
             originalClass={item.originalClass}
             slideStyle={slideStyles[index]}
-            showItem={true}
+            showItem={showItems[index]}
             {item}
             isFullscreen={false}
           />
@@ -151,7 +161,7 @@
           alignment={alignmentClasses[index]}
           originalClass={item.originalClass}
           slideStyle={slideStyles[index]}
-          showItem={true}
+          showItem={showItems[index]}
           {item}
           isFullscreen={false}
         />

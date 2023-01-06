@@ -79,6 +79,7 @@
   let resizeSlideWrapperObserver: ResizeObserver;
   let resizeThumbnailWrapperObserver: ResizeObserver;
   let thumbnailMouseOverTimer: number | null = null;
+  let lazyLoaded: boolean[] = [];
 
   let thumbsTranslate = 0;
   let thumbsSwipedTranslate = 0;
@@ -367,6 +368,10 @@
       }
     }
   };
+
+  $: onLazyLoad = (event: { detail: number }) => {
+    lazyLoaded[event.detail] = true;
+  };
 </script>
 
 <!-- TODO: we use an id as a replacement for React's "ref" -->
@@ -398,6 +403,8 @@
         {disableSwipe}
         {stopPropagation}
         {indexSeparator}
+        {lazyLoad}
+        {lazyLoaded}
         on:slideleft={() => slideLeft()}
         on:slideright={() => slideRight()}
         on:slidejump={(event) => {
@@ -405,6 +412,7 @@
         }}
         on:playtoggle={togglePlay}
         on:fullscreentoggle={toggleFullscreen}
+        on:lazyload={onLazyLoad}
       />
     {/if}
     {#if showThumbnails}
@@ -444,6 +452,8 @@
         {disableSwipe}
         {stopPropagation}
         {indexSeparator}
+        {lazyLoad}
+        {lazyLoaded}
         on:slideleft={() => slideLeft()}
         on:slideright={() => slideRight()}
         on:slidejump={(event) => {
@@ -451,6 +461,7 @@
         }}
         on:playtoggle={togglePlay}
         on:fullscreentoggle={toggleFullscreen}
+        on:lazyload={onLazyLoad}
       />
     {/if}
   </div>
