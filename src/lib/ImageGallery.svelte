@@ -76,10 +76,9 @@
   let galleryWidth = 1000;
   let gallerySlideWrapperHeight = 1000;
   let thumbnailsWrapperWidth = 1000;
+  let thumbnailsWrapperHeight = 1000;
   let resizeSlideWrapperObserver: ResizeObserver;
   let resizeThumbnailWrapperObserver: ResizeObserver;
-
-  let thumbnailWrapper: ThumbnailWrapper;
 
   let thumbsTranslate = 0;
   let thumbsSwipedTranslate = 0;
@@ -132,7 +131,7 @@
       isTransitioning = nextIndex !== currentIndex;
       previousIndex = currentIndex;
       currentIndex = nextIndex;
-      thumbnailWrapper.slideThumbnailBar();
+      slideThumbnailBar();
       currentSlideOffset = 0;
       onSliding();
     }
@@ -153,6 +152,28 @@
         */
       }
     }, slideDuration + 50);
+  };
+
+  $: slideThumbnailBar = () => {
+    const nextTranslate = -getThumbsTranslate(
+      currentIndex,
+      disableThumbnailScroll,
+      thumbnailsWrapperWidth,
+      thumbnailsWrapperHeight,
+      isThumbnailVertical,
+      items.length
+    );
+    // if (isSwipingThumbnail) {
+    //   return;
+    // }
+
+    if (currentIndex === 0) {
+      thumbsTranslate = 0;
+      thumbsSwipedTranslate = 0;
+    } else {
+      thumbsTranslate = nextTranslate;
+      thumbsSwipedTranslate = nextTranslate;
+    }
   };
 
   function handleKeyDown(event: KeyboardEvent) {
@@ -260,7 +281,8 @@
   onMount(async () => {
     const slideWrapperRef = document.getElementById('slideWrapper')!;
     initSlideWrapperResizeObserver(slideWrapperRef);
-    thumbnailWrapper.initResizeObserver();
+    const thumbnailWrapperRef = document.getElementById('thumbnailWrapper')!;
+    initThumbnailWrapperResizeObserver(thumbnailWrapperRef);
     // TODO: implement handleScreenChange()
   });
 
@@ -281,6 +303,22 @@
     resizeSlideWrapperObserver.observe(element);
   };
 
+  const initThumbnailWrapperResizeObserver = (element: HTMLElement) => {
+    if (!element) {
+      return;
+    } // thumbnails are not always available
+    resizeThumbnailWrapperObserver = new ResizeObserver(
+      debounce(50, (entries: ResizeObserverEntry[]) => {
+        if (!entries) return;
+        entries.forEach((entry) => {
+          thumbnailsWrapperHeight = entry.contentRect.height;
+          handleResize();
+        });
+      })
+    );
+    resizeThumbnailWrapperObserver.observe(element);
+  };
+
   $: handleResize = () => {
     // component has been unmounted
     // TODO
@@ -297,6 +335,16 @@
     if (slideWrapperRef) {
       gallerySlideWrapperHeight = slideWrapperRef.offsetHeight;
     }
+
+    // Adjust thumbnail container when thumbnail width or height is adjusted
+    thumbsTranslate = getThumbsTranslate(
+      currentIndex,
+      disableThumbnailScroll,
+      thumbnailsWrapperWidth,
+      thumbnailsWrapperHeight,
+      isThumbnailVertical,
+      items.length
+    );
   };
 </script>
 
@@ -339,7 +387,6 @@
     {/if}
     {#if showThumbnails}
       <ThumbnailWrapper
-        bind:this={thumbnailWrapper}
         {items}
         {currentIndex}
         {useTranslate3D}
@@ -348,8 +395,6 @@
         {thumbsTranslate}
         {thumbsStyle}
         {slideOnThumbnailOver}
-        {thumbnailsWrapperWidth}
-        {disableThumbnailScroll}
         on:slidejump={(event) => {
           slideToIndex(event.detail);
         }}
