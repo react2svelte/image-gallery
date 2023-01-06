@@ -362,7 +362,7 @@
         });
       })
     );
-    resizeThumbnailWrapperObserver.observe(element.current);
+    resizeThumbnailWrapperObserver.observe(element);
   };
 
   $: handleResize = () => {
