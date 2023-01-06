@@ -1,13 +1,16 @@
 <!--
   Dispatched events:
   - thumbnailswiped
-  - thumbsslidex
-  - thumbsslidey
+  - thumbsslideoffset
 -->
 <script lang="ts">
-  import { swipable, UP, DOWN, LEFT, RIGHT } from '@react2svelte/swipable';
+  import { swipable } from '@react2svelte/swipable/main';
+  import { UP, DOWN, LEFT, RIGHT } from '@react2svelte/swipable/types';
   import type { SwipeEventData } from '@react2svelte/swipable/types';
   import { createEventDispatcher } from 'svelte';
+  import clsx from 'clsx';
+  import { getThumbnailPositionClassName } from './styling';
+  import type { Position } from './types';
 
   let dispatch = createEventDispatcher();
 
@@ -16,6 +19,8 @@
   export let swipingThumbnailTransitionDuration: number;
   export let stopPropagation: boolean;
   export let isThumbnailVertical: boolean;
+  export let thumbnailPosition: Position;
+  export let isRTL: boolean;
 
   export let thumbnailsWrapperHeight: number;
   export let thumbnailsWrapperWidth: number;
@@ -25,7 +30,7 @@
   let swipingUpDown: boolean;
   let swipingLeftRight: boolean;
 
-  let thumbsSwipedTranslate = 0;
+  export let thumbsSwipedTranslate: number;
 
   function resetSwipingDirection() {
     if (swipingUpDown) {
@@ -40,6 +45,7 @@
   }
 
   function handleThumbnailSwiping({ event, absX, absY, dir }: SwipeEventData) {
+    if (disableThumbnailSwipe) return;
     if (isThumbnailVertical) {
       // if the initial swiping is left/right, prevent moving the thumbnail bar until swipe ends
       if ((dir === LEFT || dir === RIGHT || swipingLeftRight) && !swipingUpDown) {
@@ -109,9 +115,9 @@
     if (stopPropagation) event.stopPropagation();
 
     if (isThumbnailVertical) {
-      dispatch('thumbsslidey', slideY);
+      dispatch('thumbsslideoffset', slideY);
     } else {
-      dispatch('thumbsslidex', slideX);
+      dispatch('thumbsslideoffset', slideX);
     }
     /**
       TODO
@@ -129,13 +135,8 @@
   }
 
   function handleOnThumbnailSwiped() {
+    if (disableThumbnailSwipe) return;
     resetSwipingDirection();
-    if (isThumbnailVertical) {
-      dispatch('thumbsslidey', 0);
-    } else {
-      dispatch('thumbsslidex', 0);
-    }
-
     dispatch('thumbnailswiped');
     /** 
       TODO
@@ -150,10 +151,19 @@
       });
     */
   }
+
+  let cls = clsx(
+    'image-gallery-thumbnails-wrapper',
+    getThumbnailPositionClassName(thumbnailPosition),
+    { 'thumbnails-wrapper-rtl': !isThumbnailVertical && isRTL },
+    { 'thumbnails-swipe-horizontal': !isThumbnailVertical && !disableThumbnailSwipe },
+    { 'thumbnails-swipe-vertical': isThumbnailVertical && !disableThumbnailSwipe }
+  );
 </script>
 
 <div
-  use:swipable
+  class={cls}
+  use:swipable={{ delta: 0 }}
   on:swiping={(e) => handleThumbnailSwiping(e.detail)}
   on:swiped={() => handleOnThumbnailSwiped()}
 >

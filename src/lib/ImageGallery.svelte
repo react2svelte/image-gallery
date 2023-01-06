@@ -71,7 +71,6 @@
   let isTransitioning = false;
   let currentSlideOffset = 0;
   let transitionTimer = null;
-  let isSwipingThumbnail = false;
   let galleryWidth = 1000;
   let gallerySlideWrapperHeight = 1000;
   let resizeSlideWrapperObserver: ResizeObserver;
@@ -142,7 +141,7 @@
         isTransitioning = false;
         // reset swiping thumbnail after transitioning to new slide,
         // so we can resume thumbnail auto translate
-        isSwipingThumbnail = false;
+        thumbnailWrapper.resetSwipingThumbnail();
         /**
          * TODO dispatch an event instead of calling this handler
         if (onSlide) {
@@ -390,6 +389,8 @@
         {slideDuration}
         {slideOnThumbnailOver}
         {disableThumbnailScroll}
+        {stopPropagation}
+        {swipingThumbnailTransitionDuration}
         on:slidejump={(event) => {
           slideToIndex(event.detail);
         }}
