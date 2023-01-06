@@ -1,5 +1,5 @@
 <script lang="ts">
-  export let original: string;
+  export let original: string | undefined;
   export let fullscreen: string | undefined; // img source for fullscreen
   export let handleImageLoaded: Function;
   export let description = '';

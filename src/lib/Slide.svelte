@@ -5,7 +5,7 @@
 
   export let index: number;
   export let alignment: string;
-  export let originalClass: string;
+  export let originalClass: string | undefined;
   export let slideStyle: string;
   export let showItem: boolean;
   export let item: TItem;

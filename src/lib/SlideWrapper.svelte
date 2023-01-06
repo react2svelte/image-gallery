@@ -108,7 +108,7 @@
   );
 
   $: showItems = items.map((_, index) => {
-    const showItem = !lazyLoad || alignmentClasses[index] || lazyLoaded[index];
+    const showItem = !lazyLoad || !!alignmentClasses[index] || lazyLoaded[index];
     if (showItem && lazyLoad && !lazyLoaded[index]) {
       dispatch('lazyload', index);
     }
