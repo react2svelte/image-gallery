@@ -52,7 +52,7 @@
   export let additionalClass: string = '';
   export let useTranslate3D: boolean = true;
   export let isRTL: boolean = false;
-  export let useWindowKeyDown: boolean;
+  export let useWindowKeyDown = true;
 
   let currentIndex = 1;
   let previousIndex = 1;
@@ -73,7 +73,7 @@
 
   let thumbsTranslate = 0;
   let thumbsSwipedTranslate = 0;
-  $: thumbsStyle = { transition: `all ${slideDuration}ms ease-out` };
+  $: thumbsStyle = `transition: all ${slideDuration}ms ease-out;`;
 
   $: canSlide = items.length >= 2;
   $: canSlidePrevious = currentIndex > 0;
@@ -330,6 +330,7 @@
     initSlideWrapperResizeObserver(slideWrapperRef);
     const thumbnailWrapperRef = document.getElementById('thumbnailWrapper');
     initThumbnailWrapperResizeObserver(thumbnailWrapperRef);
+    // TODO: implement handleScreenChange()
   });
 
   $: initSlideWrapperResizeObserver = (element: HTMLElement) => {
@@ -449,7 +450,7 @@
         {showPlayButton}
         {currentSlideOffset}
         {isTransitioning}
-        galleryWidth={getGalleryWidth()}
+        {galleryWidth}
         on:slideleft={() => slideLeft()}
         on:slideright={() => slideRight()}
         on:slidejump={(event) => {
