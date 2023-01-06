@@ -75,14 +75,10 @@
   let isSwipingThumbnail = false;
   let galleryWidth = 1000;
   let gallerySlideWrapperHeight = 1000;
-  let thumbnailsWrapperWidth = 1000;
-  let thumbnailsWrapperHeight = 1000;
   let resizeSlideWrapperObserver: ResizeObserver;
   let resizeThumbnailWrapperObserver: ResizeObserver;
 
-  let thumbsTranslate = 0;
-  let thumbsSwipedTranslate = 0;
-  $: thumbsStyle = `transition: all ${slideDuration}ms ease-out;`;
+  let thumbnailWrapper: ThumbnailWrapper;
 
   $: canSlide = items.length >= 2;
   $: canSlidePrevious = currentIndex > 0;
@@ -131,7 +127,7 @@
       isTransitioning = nextIndex !== currentIndex;
       previousIndex = currentIndex;
       currentIndex = nextIndex;
-      slideThumbnailBar();
+      thumbnailWrapper.slideThumbnailBar();
       currentSlideOffset = 0;
       onSliding();
     }
@@ -154,28 +150,6 @@
     }, slideDuration + 50);
   };
 
-  $: slideThumbnailBar = () => {
-    const nextTranslate = -getThumbsTranslate(
-      currentIndex,
-      disableThumbnailScroll,
-      thumbnailsWrapperWidth,
-      thumbnailsWrapperHeight,
-      isThumbnailVertical,
-      items.length
-    );
-    // if (isSwipingThumbnail) {
-    //   return;
-    // }
-
-    if (currentIndex === 0) {
-      thumbsTranslate = 0;
-      thumbsSwipedTranslate = 0;
-    } else {
-      thumbsTranslate = nextTranslate;
-      thumbsSwipedTranslate = nextTranslate;
-    }
-  };
-
   function handleKeyDown(event: KeyboardEvent) {
     // keep track of mouse vs keyboard usage for a11y
     // this.imageGallery.current.classList.remove('image-gallery-using-mouse');
@@ -183,17 +157,17 @@
     if (disableKeyDown) return;
 
     switch (event.code) {
-      case "ArrowLeft":
+      case 'ArrowLeft':
         if (canSlideLeft) {
           slideLeft();
         }
         break;
-      case "ArrowRight":
+      case 'ArrowRight':
         if (canSlideRight) {
           slideRight();
         }
         break;
-      case "Escape":
+      case 'Escape':
         if (isFullscreen && !useBrowserFullscreen) {
           exitFullScreen();
         }
@@ -295,7 +269,7 @@
       debounce(50, (entries: ResizeObserverEntry[]) => {
         if (!entries) return;
         entries.forEach((entry) => {
-          thumbnailsWrapperWidth = entry.contentRect.width;
+          thumbnailWrapper.handleResizeWidth(entry.contentRect.width);
           handleResize();
         });
       })
@@ -311,7 +285,7 @@
       debounce(50, (entries: ResizeObserverEntry[]) => {
         if (!entries) return;
         entries.forEach((entry) => {
-          thumbnailsWrapperHeight = entry.contentRect.height;
+          thumbnailWrapper.handleResizeHeight(entry.contentRect.height);
           handleResize();
         });
       })
@@ -335,16 +309,6 @@
     if (slideWrapperRef) {
       gallerySlideWrapperHeight = slideWrapperRef.offsetHeight;
     }
-
-    // Adjust thumbnail container when thumbnail width or height is adjusted
-    thumbsTranslate = getThumbsTranslate(
-      currentIndex,
-      disableThumbnailScroll,
-      thumbnailsWrapperWidth,
-      thumbnailsWrapperHeight,
-      isThumbnailVertical,
-      items.length
-    );
   };
 </script>
 
@@ -387,14 +351,15 @@
     {/if}
     {#if showThumbnails}
       <ThumbnailWrapper
+        bind:this={thumbnailWrapper}
         {items}
         {currentIndex}
         {useTranslate3D}
         {isRTL}
         {thumbnailPosition}
-        {thumbsTranslate}
-        {thumbsStyle}
+        {slideDuration}
         {slideOnThumbnailOver}
+        {disableThumbnailScroll}
         on:slidejump={(event) => {
           slideToIndex(event.detail);
         }}
