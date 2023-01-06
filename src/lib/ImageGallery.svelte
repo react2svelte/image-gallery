@@ -340,7 +340,12 @@
 </script>
 
 <!-- TODO: we use an id as a replacement for React's "ref" -->
-<div class={igClass} aria-live="polite" id="imageGallery">
+<div
+  class={igClass}
+  aria-live="polite"
+  id="imageGallery"
+  on:keydown={!useWindowKeyDown ? handleKeyDown : undefined}
+>
   <div class={igContentClass}>
     {#if thumbnailPosition === 'bottom' || thumbnailPosition === 'right'}
       <SlideWrapper
@@ -416,4 +421,4 @@
   </div>
 </div>
 
-<svelte:window on:keydown={handleKeyDown} />
+<svelte:window on:keydown={useWindowKeyDown ? handleKeyDown : undefined} />
