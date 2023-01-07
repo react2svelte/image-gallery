@@ -3,6 +3,7 @@
   import ImageGallery from '$lib/ImageGallery.svelte';
   import type { Position } from '$lib/types';
 
+  let startIndex = 0;
   // TODO Once the ImageGallery supports rendering of custom items, we can showcase videos
   //   and other custom slides
   let showIndex = false;
@@ -46,6 +47,7 @@
     <ImageGallery
       additionalClass="app-image-gallery"
       items={images}
+      {startIndex}
       {infinite}
       {showBullets}
       {showFullscreenButton}
@@ -66,6 +68,13 @@
     <div class="app-sandbox">
       <div class="app-sandbox-content">
         <h2 class="app-header">Settings</h2>
+
+        <li>
+          <div class="app-interval-input-group">
+            <span class="app-interval-label">Start index</span>
+            <input class="app-interval-input" type="number" bind:value={startIndex} />
+          </div>
+        </li>
 
         <ul class="app-buttons">
           <li>

@@ -56,7 +56,8 @@
   $: swipingTransitionStyle = `transform ${swipingTransitionDuration}ms ease-out`;
   $: transitionStyle = hardTransition ? noneTransitionStyle : defaultTransitionStyle;
 
-  $: currentIndex = startIndex;
+  let currentIndex = 0;
+  $: { currentIndex = startIndex };
   let previousIndex = startIndex;
   let playPauseIntervalId: number | null = null;
   let isPlaying = false;
