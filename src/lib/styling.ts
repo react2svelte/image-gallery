@@ -41,6 +41,64 @@ export const getThumbsTranslate = (
   return 0;
 };
 
+export const getTranslateXForTwoSlide = (
+  index: number,
+  currentIndex: number,
+  currentSlideOffset: number,
+  previousIndex: number
+) => {
+  // For taking care of infinite swipe when there are only two slides\
+  const indexChanged = currentIndex !== previousIndex;
+  const firstSlideWasPrevSlide = index === 0 && previousIndex === 0;
+  const secondSlideWasPrevSlide = index === 1 && previousIndex === 1;
+  const firstSlideIsNextSlide = index === 0 && currentIndex === 1;
+  const secondSlideIsNextSlide = index === 1 && currentIndex === 0;
+  const swipingEnded = currentSlideOffset === 0;
+  const baseTranslateX = -100 * currentIndex;
+  let translateX = baseTranslateX + index * 100 + currentSlideOffset;
+
+  // keep track of user swiping direction
+  // important to understand how to translateX based on last direction
+  let direction;
+  if (currentSlideOffset > 0) {
+    direction = 'left';
+  } else {
+    // TODO The original code stores the direction in a class variable
+    //    and sets the direction only to right if currentSlideOffset < 0
+    direction = 'right';
+  }
+
+  // when swiping between two slides make sure the next and prev slides
+  // are on both left and right
+  if (secondSlideIsNextSlide && currentSlideOffset > 0) {
+    // swiping right
+    translateX = -100 + currentSlideOffset;
+  }
+  if (firstSlideIsNextSlide && currentSlideOffset < 0) {
+    // swiping left
+    translateX = 100 + currentSlideOffset;
+  }
+
+  if (indexChanged) {
+    // when indexChanged move the slide to the correct side
+    if (firstSlideWasPrevSlide && swipingEnded && direction === 'left') {
+      translateX = 100;
+    } else if (secondSlideWasPrevSlide && swipingEnded && direction === 'right') {
+      translateX = -100;
+    }
+  } else {
+    // keep the slide on the correct side if the swipe was not successful
+    if (secondSlideIsNextSlide && swipingEnded && direction === 'left') {
+      translateX = -100;
+    }
+    if (firstSlideIsNextSlide && swipingEnded && direction === 'right') {
+      translateX = 100;
+    }
+  }
+
+  return translateX;
+};
+
 export const getIgClass = (
   modalFullscreen: boolean,
   additionalClass: string,
@@ -67,6 +125,7 @@ export const getSlideWrapperClass = (isRTL: boolean, thumbnailPosition: Position
 export const getSlideStyle = (
   index: number,
   currentIndex: number,
+  previousIndex: number,
   numberItems: number,
   isRTL: boolean,
   currentSlideOffset: number,
@@ -95,7 +154,7 @@ export const getSlideStyle = (
 
   // Special case when there are only 2 items with infinite on
   if (infinite && numberItems === 2) {
-    // TODO
+    translateX = getTranslateXForTwoSlide(index, currentIndex, currentSlideOffset, previousIndex);
     // translateX = this.getTranslateXForTwoSlide(index);
   }
 

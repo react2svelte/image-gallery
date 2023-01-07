@@ -102,6 +102,7 @@
     getSlideStyle(
       index,
       currentIndex,
+      previousIndex,
       items.length,
       isRTL,
       currentSlideOffset,
