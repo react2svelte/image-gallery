@@ -131,7 +131,8 @@ export const getSlideStyle = (
   currentSlideOffset: number,
   infinite: boolean,
   isSlideVisible: boolean,
-  transitionStyle: string
+  transitionStyle: string,
+  useTranslate3D: boolean
 ) => {
   const baseTranslateX = -100 * currentIndex;
   const totalSlides = numberItems - 1;
@@ -155,14 +156,11 @@ export const getSlideStyle = (
   // Special case when there are only 2 items with infinite on
   if (infinite && numberItems === 2) {
     translateX = getTranslateXForTwoSlide(index, currentIndex, currentSlideOffset, previousIndex);
-    // translateX = this.getTranslateXForTwoSlide(index);
   }
 
   let translate = `translate(${translateX}%, 0)`;
 
-  // if (useTranslate3D) {
-  // eslint-disable-next-line no-constant-condition
-  if (true) {
+  if (useTranslate3D) {
     translate = `translate3d(${translateX}%, 0, 0)`;
   }
 

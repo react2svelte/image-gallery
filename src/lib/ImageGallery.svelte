@@ -415,6 +415,7 @@
         {flickThreshold}
         {transitionStyle}
         {swipingTransitionStyle}
+        {useTranslate3D}
         on:slideleft={() => slideLeft()}
         on:slideright={() => slideRight()}
         on:slidejump={(event) => {
@@ -476,6 +477,7 @@
         {flickThreshold}
         {transitionStyle}
         {swipingTransitionStyle}
+        {useTranslate3D}
         on:slideleft={() => slideLeft()}
         on:slideright={() => slideRight()}
         on:slidejump={(event) => {

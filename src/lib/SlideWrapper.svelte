@@ -35,6 +35,7 @@
   export let flickThreshold: number;
   export let transitionStyle: string; // how should transitions be made? CSS, i.e. 'transform 450ms ease-out'
   export let swipingTransitionStyle: string;
+  export let useTranslate3D: boolean;
 
   let isSwiping = false;
   $: currentTransitionStyle = isSwiping ? swipingTransitionStyle : transitionStyle;
@@ -108,7 +109,8 @@
       currentSlideOffset,
       infinite,
       isSlideVisible(index),
-      currentTransitionStyle
+      currentTransitionStyle,
+      useTranslate3D
     )
   );
 
