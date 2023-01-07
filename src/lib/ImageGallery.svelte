@@ -1,4 +1,5 @@
 <script lang="ts">
+  import './app.css';
   import type { Position, Direction, TItem } from '$lib/types';
   import SlideWrapper from '$lib/SlideWrapper.svelte';
   import ThumbnailWrapper from '$lib/ThumbnailWrapper.svelte';
@@ -486,7 +487,3 @@
   on:keydown={useWindowKeyDown ? handleKeyDown : undefined}
   on:fullscreenchange={handleScreenChange}
 />
-
-<style lang='scss' global>
-  @import '../app';
-</style>
