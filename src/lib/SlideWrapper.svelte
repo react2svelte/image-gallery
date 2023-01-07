@@ -10,6 +10,7 @@
   import SwipeWrapper from './SwipeWrapper.svelte';
   import { getAlignmentClassName, getBulletStyle, getSlideStyle } from '$lib/styling';
 
+  // settings
   export let slideWrapperClass: string;
   export let items: TItem[];
   export let showNav: boolean;
@@ -45,6 +46,13 @@
   $: canSlideNext = currentIndex < items.length - 1;
   $: canSlideLeft = infinite || (isRTL ? canSlideNext : canSlidePrevious);
   $: canSlideRight = infinite || (isRTL ? canSlidePrevious : canSlideNext);
+
+  // the element of this wrapper, useful to observe resize changes
+  let elem: Element;
+
+  export function getElem() {
+    return elem;
+  }
 
   const dispatch = createEventDispatcher();
 
@@ -128,7 +136,7 @@
 </script>
 
 <!-- TODO: we use an id as a replacement for React's "ref" -->
-<div class={slideWrapperClass} id="slideWrapper">
+<div class={slideWrapperClass} bind:this={elem}>
   <!-- TODO: render custom controls -->
 
   <!-- Slides -->

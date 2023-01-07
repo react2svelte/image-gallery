@@ -65,8 +65,8 @@
     currentIndex = startIndex;
     setTimeout(() => {
       hardTransition = false;
-    },  50);
-  };
+    }, 50);
+  }
   let previousIndex = startIndex;
   let playPauseIntervalId: number | null = null;
   let isPlaying = false;
@@ -86,15 +86,15 @@
   /** keep track of mouse vs keyboard usage for a11y */
   let currentlyUsingMouseOrKeyboard: MouseOrKeyboard = 'mouse';
 
-  let thumbnailWrapper: ThumbnailWrapper;
-
   $: canSlide = items.length >= 2;
   $: canSlidePrevious = currentIndex > 0;
   $: canSlideNext = currentIndex < items.length - 1;
   $: canSlideLeft = infinite || (isRTL ? canSlideNext : canSlidePrevious);
   $: canSlideRight = infinite || (isRTL ? canSlidePrevious : canSlideNext);
 
-  $: isThumbnailVertical = thumbnailPosition === 'left' || thumbnailPosition === 'right';
+  // component bindings. These vars are set from bindings in the HTML below
+  let slideWrapper: SlideWrapper;
+  let thumbnailWrapper: ThumbnailWrapper;
 
   const dispatch = createEventDispatcher();
 
@@ -300,17 +300,15 @@
   $: slideWrapperClass = getSlideWrapperClass(isRTL, thumbnailPosition);
 
   onMount(async () => {
-    const slideWrapperRef = document.getElementById('slideWrapper')!;
-    initSlideWrapperResizeObserver(slideWrapperRef);
-    const thumbnailWrapperRef = document.getElementById('thumbnailWrapper')!;
-    initThumbnailWrapperResizeObserver(thumbnailWrapperRef);
+    initSlideWrapperResizeObserver();
+    initThumbnailWrapperResizeObserver();
     if (autoPlay) {
       play();
     }
   });
 
-  const initSlideWrapperResizeObserver = (element: HTMLElement) => {
-    if (!element) {
+  function initSlideWrapperResizeObserver() {
+    if (!slideWrapper) {
       return;
     }
     // keeps track of gallery height changes for vertical thumbnail height
@@ -323,11 +321,11 @@
         });
       })
     );
-    resizeSlideWrapperObserver.observe(element);
-  };
+    resizeSlideWrapperObserver.observe(slideWrapper.getElem());
+  }
 
-  const initThumbnailWrapperResizeObserver = (element: HTMLElement) => {
-    if (!element) {
+  function initThumbnailWrapperResizeObserver() {
+    if (!thumbnailWrapper) {
       return;
     } // thumbnails are not always available
     resizeThumbnailWrapperObserver = new ResizeObserver(
@@ -339,8 +337,8 @@
         });
       })
     );
-    resizeThumbnailWrapperObserver.observe(element);
-  };
+    resizeThumbnailWrapperObserver.observe(thumbnailWrapper.getElem());
+  }
 
   $: handleResize = () => {
     // component has been unmounted
@@ -398,6 +396,7 @@
   <div class={igContentClass}>
     {#if thumbnailPosition === 'bottom' || thumbnailPosition === 'right'}
       <SlideWrapper
+        bind:this={slideWrapper}
         {slideWrapperClass}
         {items}
         {showNav}
@@ -460,6 +459,7 @@
     {/if}
     {#if thumbnailPosition === 'top' || thumbnailPosition === 'left'}
       <SlideWrapper
+        bind:this={slideWrapper}
         {slideWrapperClass}
         {items}
         {showNav}

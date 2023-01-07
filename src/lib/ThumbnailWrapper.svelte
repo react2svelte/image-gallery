@@ -4,7 +4,9 @@
   import { createEventDispatcher } from 'svelte';
   import { getIgThumbnailClass, getThumbnailStyle, getThumbsTranslate } from '$lib/styling';
   import ThumbnailSwipeWrapper from './ThumbnailSwipeWrapper.svelte';
+  import { element } from 'svelte/internal';
 
+  // settings
   export let items: TItem[];
   export let currentIndex: number;
   export let useTranslate3D: boolean;
@@ -20,6 +22,13 @@
 
   let isSwipingThumbnail = false; // currently swiping?
   let isSwipedThumbnail = false; // swiped? relevant for auto-play
+
+  // the root element
+  let elem: Element;
+
+  export function getElem() {
+    return elem;
+  }
 
   // the thumbnails container element
   let thumbnails: HTMLElement;
@@ -132,7 +141,7 @@
     thumbsSwipedTranslate = thumbsTranslate;
   }}
 >
-  <div class="image-gallery-thumbnails" id="thumbnailWrapper" style={getThumbnailBarHeight()}>
+  <div class="image-gallery-thumbnails" bind:this={elem} style={getThumbnailBarHeight()}>
     <nav
       bind:this={thumbnails}
       class="image-gallery-thumbnails-container"
