@@ -64,7 +64,8 @@ export const getSlideStyle = (
   isRTL: boolean,
   currentSlideOffset: number,
   infinite: boolean,
-  isSlideVisible: boolean
+  isSlideVisible: boolean,
+  transitionStyle: string
 ) => {
   const baseTranslateX = -100 * currentIndex;
   const totalSlides = numberItems - 1;
@@ -106,8 +107,8 @@ export const getSlideStyle = (
       msTransform: ${translate};
       OTransform: ${translate};
       transform: ${translate};
-      transition: all 450ms ease-out 0s;
-    `; // ...slideStyle;
+      transition: ${transitionStyle};
+    `;
 };
 
 export const getBulletStyle = (index: number, currentIndex: number, itemBulletClass?: string) => {

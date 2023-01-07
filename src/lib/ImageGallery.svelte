@@ -51,6 +51,13 @@
   export let isRTL: boolean = false;
   export let useWindowKeyDown = true;
 
+  // transition styles for the slides
+  let hardTransition = false;
+  $: defaultTransitionStyle = `transform ${slideDuration}ms ease-out`;
+  let noneTransitionStyle = 'none';
+  $: swipingTransitionStyle = `transform ${swipingTransitionDuration}ms ease-out`;
+  $: transitionStyle = hardTransition ? noneTransitionStyle : defaultTransitionStyle;
+
   $: currentIndex = startIndex;
   let previousIndex = startIndex;
   let playPauseIntervalId: number | null = null;
@@ -398,7 +405,8 @@
         {lazyLoaded}
         {swipeThreshold}
         {flickThreshold}
-        {swipingTransitionDuration}
+        {transitionStyle}
+        {swipingTransitionStyle}
         on:slideleft={() => slideLeft()}
         on:slideright={() => slideRight()}
         on:slidejump={(event) => {
@@ -458,7 +466,8 @@
         {lazyLoaded}
         {swipeThreshold}
         {flickThreshold}
-        {swipingTransitionDuration}
+        {transitionStyle}
+        {swipingTransitionStyle}
         on:slideleft={() => slideLeft()}
         on:slideright={() => slideRight()}
         on:slidejump={(event) => {

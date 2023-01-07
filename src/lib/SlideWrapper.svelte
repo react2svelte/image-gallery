@@ -33,7 +33,11 @@
   export let lazyLoaded: boolean[];
   export let swipeThreshold: number;
   export let flickThreshold: number;
-  export let swipingTransitionDuration: number;
+  export let transitionStyle: string; // how should transitions be made? CSS, i.e. 'transform 450ms ease-out'
+  export let swipingTransitionStyle: string;
+
+  let isSwiping = false;
+  $: currentTransitionStyle = isSwiping ? swipingTransitionStyle : transitionStyle;
 
   $: canSlide = items.length >= 2;
   $: canSlidePrevious = currentIndex > 0;
@@ -102,7 +106,8 @@
       isRTL,
       currentSlideOffset,
       infinite,
-      isSlideVisible(index)
+      isSlideVisible(index),
+      currentTransitionStyle
     )
   );
 
@@ -139,12 +144,24 @@
       {isRTL}
       {swipeThreshold}
       {flickThreshold}
-      {swipingTransitionDuration}
       on:slideoffsetchanged={(e) => {
+        isSwiping = true;
         currentSlideOffset = e.detail;
       }}
-      on:swipenext={() => (currentIndex += 1)}
-      on:swipeprevious={() => (currentIndex -= 1)}
+      on:swipenext={() => {
+        isSwiping = false;
+        currentSlideOffset = 0;
+        currentIndex += 1;
+      }}
+      on:swipeprevious={() => {
+        isSwiping = false;
+        currentSlideOffset = 0;
+        currentIndex -= 1;
+      }}
+      on:swipeend={() => {
+        isSwiping = false;
+        currentSlideOffset = 0;
+      }}
     >
       <div class="image-gallery-slides">
         {#each items as item, index}

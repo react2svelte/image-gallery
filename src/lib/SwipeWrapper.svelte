@@ -18,7 +18,6 @@
   export let stopPropagation: boolean;
   export let swipeThreshold: number;
   export let flickThreshold: number;
-  export let swipingTransitionDuration: number;
   // external state
   export let isRTL: boolean;
   export let galleryWidth: number;
@@ -101,8 +100,6 @@
     if (stopPropagation) event.stopPropagation();
     resetSwipingDirection();
 
-    currentSlideOffset = 0;
-
     // if it is RTL the direction is reversed
     const swipeDirection = (dir === LEFT ? 1 : -1) * (isRTL ? -1 : 1);
     const isSwipeUpOrDown = dir === UP || dir === DOWN;
@@ -127,6 +124,7 @@
     } else if (indexOffset > 0) {
       dispatch('swipenext');
     }
+    dispatch('swipeend');
   }
 </script>
 
