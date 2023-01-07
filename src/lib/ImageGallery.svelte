@@ -189,7 +189,7 @@
       isPlaying = true;
       playPauseIntervalId = window.setInterval(pauseOrPlay, Math.max(slideInterval, slideDuration));
       if (shouldCallOnPlay) {
-        dispatch('play', currentIndex);
+        dispatch('play', { currentIndex });
       }
     }
   };
@@ -200,7 +200,7 @@
       playPauseIntervalId = null;
       isPlaying = false;
       if (shouldCallOnPause) {
-        dispatch('pause', currentIndex);
+        dispatch('pause', { currentIndex });
       }
     }
   };
