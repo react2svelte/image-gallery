@@ -21,6 +21,8 @@
   let thumbnailPosition: Position = 'bottom';
   // let showVideo = {};
   let useWindowKeyDown = true;
+  let disableSwipe = false;
+  let disableThumbnailSwipe = false;
 
   const PREFIX_URL = 'https://raw.githubusercontent.com/xiaolin/react-image-gallery/master/static/';
 
@@ -57,6 +59,8 @@
       {slideInterval}
       {slideOnThumbnailOver}
       {useWindowKeyDown}
+      {disableSwipe}
+      {disableThumbnailSwipe}
     />
 
     <div class="app-sandbox">
@@ -135,6 +139,18 @@
           <li>
             <input id="use_window_keydown" type="checkbox" bind:checked={useWindowKeyDown} />
             <label for="use_window_keydown">use window keydown</label>
+          </li>
+          <li>
+            <input id="disable_swipe" type="checkbox" bind:checked={disableSwipe} />
+            <label for="disable_swipe">disable swipe</label>
+          </li>
+          <li>
+            <input
+              id="disable_thumbnail_swipe"
+              type="checkbox"
+              bind:checked={disableThumbnailSwipe}
+            />
+            <label for="disable_thumbnail_swipe">disable thumbnail swipe</label>
           </li>
         </ul>
       </div>
