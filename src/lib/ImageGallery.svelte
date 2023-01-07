@@ -57,7 +57,16 @@
   $: transitionStyle = hardTransition ? noneTransitionStyle : defaultTransitionStyle;
 
   let currentIndex = 0;
-  $: { currentIndex = startIndex };
+  $: {
+    // this bit is quite ugly.
+    // we set 'hardTransition' and then do the update a little bit later,
+    // to allow for the updated CSS property to propagate
+    hardTransition = true;
+    currentIndex = startIndex;
+    setTimeout(() => {
+      hardTransition = false;
+    },  50);
+  };
   let previousIndex = startIndex;
   let playPauseIntervalId: number | null = null;
   let isPlaying = false;
