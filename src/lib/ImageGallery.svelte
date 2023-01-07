@@ -35,8 +35,6 @@
   export let swipingThumbnailTransitionDuration: number = 0;
   /** TODO
   export let onClick: Function = null;
-  export let onImageLoad: Function = null;
-  export let onImageError: Function = null;
   export let onTouchMove: Function = null;
   export let onTouchEnd: Function = null;
   export let onTouchStart: Function = null;

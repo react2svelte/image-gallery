@@ -33,9 +33,6 @@
   $: dispatch('slideoffsetchanged', currentSlideOffset);
 
   function handleSwiping({ event, absX, dir }: SwipeEventData) {
-    // TODO check if function does things correctly
-    console.log('swiping: ', event, absX, dir);
-
     // if the initial swiping is up/down prevent moving the slides until swipe ends
     if ((dir === UP || dir === DOWN || swipingUpDown) && !swipingLeftRight) {
       if (!swipingUpDown) {
@@ -62,16 +59,6 @@
         slideOffset = 100;
       }
       currentSlideOffset = side * slideOffset;
-
-      /**
-       * TODO
-       
-      const swipingTransition = {
-        transition: `transform ${swipingTransitionDuration}ms ease-out`
-      };
-
-      this.setState({slideStyle: swipingTransition});
-      */
     } else {
       // don't move the slide
       currentSlideOffset = 0;
