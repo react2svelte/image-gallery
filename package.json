@@ -39,7 +39,7 @@
   },
   "type": "module",
   "dependencies": {
-    "@react2svelte/swipable": "^0.1.1-alpha.0",
+    "@react2svelte/swipable": "^0.1.2-alpha.0",
     "clsx": "^1.2.1",
     "throttle-debounce": "^5.0.0"
   }
