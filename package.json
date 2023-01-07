@@ -1,6 +1,6 @@
 {
   "name": "@react2svelte/image-gallery",
-  "version": "0.1.0-alpha.1",
+  "version": "0.1.0-alpha.5",
   "license": "MIT",
   "description": "Svete image gallery ported from react-image-gallery",
   "homepage": "https://github.com/react2svelte/image-gallery",
@@ -32,7 +32,6 @@
     "sass": "^1.57.1",
     "svelte": "^3.54.0",
     "svelte-check": "^2.9.2",
-    "throttle-debounce": "^5.0.0",
     "tslib": "^2.4.1",
     "typescript": "^4.9.3",
     "vite": "^4.0.0"
@@ -40,6 +39,7 @@
   "type": "module",
   "dependencies": {
     "@react2svelte/swipable": "^0.1.1-alpha.0",
-    "clsx": "^1.2.1"
+    "clsx": "^1.2.1",
+    "throttle-debounce": "^5.0.0"
   }
 }

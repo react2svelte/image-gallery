@@ -1,5 +1,4 @@
 <script lang="ts">
-  import '../app.scss';
   export let strokeWidth = 1;
   export let viewBox = '0 0 24 24';
   export let icon: 'left' | 'right' | 'maximize' | 'minimize' | 'play' | 'pause';
