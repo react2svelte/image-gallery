@@ -119,12 +119,12 @@
     if ((swipeDirection === -1 && !canSlideLeft) || (swipeDirection === 1 && !canSlideRight)) {
       indexOffset = 0;
     }
-    if (indexOffset < 0) {
-      dispatch('swipeprevious');
-    } else if (indexOffset > 0) {
-      dispatch('swipenext');
-    }
     dispatch('swipeend');
+    if (indexOffset < 0) {
+      dispatch('swipeleft');
+    } else if (indexOffset > 0) {
+      dispatch('swiperight');
+    }
   }
 </script>
 

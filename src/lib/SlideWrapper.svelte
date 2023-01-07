@@ -148,19 +148,15 @@
         isSwiping = true;
         currentSlideOffset = e.detail;
       }}
-      on:swipenext={() => {
-        isSwiping = false;
-        currentSlideOffset = 0;
-        currentIndex += 1;
-      }}
-      on:swipeprevious={() => {
-        isSwiping = false;
-        currentSlideOffset = 0;
-        currentIndex -= 1;
-      }}
       on:swipeend={() => {
         isSwiping = false;
         currentSlideOffset = 0;
+      }}
+      on:swipeleft={() => {
+        dispatch('slideleft');
+      }}
+      on:swiperight={() => {
+        dispatch('slideright');
       }}
     >
       <div class="image-gallery-slides">
