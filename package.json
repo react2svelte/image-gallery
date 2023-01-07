@@ -1,8 +1,8 @@
 {
   "name": "@react2svelte/image-gallery",
-  "version": "0.1.0-alpha.6",
+  "version": "0.1.0-alpha.7",
   "license": "MIT",
-  "description": "Svete image gallery ported from react-image-gallery",
+  "description": "Svelte image gallery ported from react-image-gallery",
   "homepage": "https://github.com/react2svelte/image-gallery",
   "repository": {
     "type": "git",
@@ -11,6 +11,7 @@
   "scripts": {
     "dev": "vite dev",
     "build": "svelte-kit sync && svelte-package",
+    "buildDemo": "vite build",
     "prepublishOnly": "echo 'Did you mean to publish `./package/`, instead of `./`?' && exit 1",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --use-new-transformation",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
@@ -18,7 +19,7 @@
     "format": "prettier --plugin-search-dir . --write ."
   },
   "devDependencies": {
-    "@sveltejs/adapter-auto": "^1.0.0",
+    "@sveltejs/adapter-static": "^1.0.1",
     "@sveltejs/kit": "^1.0.0",
     "@sveltejs/package": "^1.0.0",
     "@types/throttle-debounce": "^5.0.0",
