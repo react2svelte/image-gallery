@@ -245,12 +245,11 @@
     const index = customEvent.detail.index;
     const event = customEvent.detail.event;
     const imageExists = imageLoaded[index];
-    // TODO
-    // if (!imageExists && onImageLoad) {
-    //   imageLoaded[index] = true; // prevent from call again
-    //   // image just loaded, call onImageLoad
-    //   onImageLoad(event);
-    // }
+    if (!imageExists) {
+      imageLoaded[index] = true; // prevent from call again
+      // image just loaded, call onImageLoad
+      dispatch('imageload', { index, event });
+    }
   };
 
   $: handleImageError = (customEvent: {
@@ -259,10 +258,12 @@
       event: ErrorEvent & { target: { src: string } };
     };
   }) => {
+    const index = customEvent.detail.index;
     const event = customEvent.detail.event;
     if (onErrorImageURL && !event.target.src.includes(onErrorImageURL)) {
       event.target.src = onErrorImageURL;
     }
+    dispatch('imageerror', { index, event });
   };
 
   $: handleScreenChange = () => {
