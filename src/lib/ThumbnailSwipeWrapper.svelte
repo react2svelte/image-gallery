@@ -126,7 +126,7 @@
     dispatch('thumbnailswiped');
   }
 
-  let cls = clsx(
+  $: cls = clsx(
     'image-gallery-thumbnails-wrapper',
     getThumbnailPositionClassName(thumbnailPosition),
     { 'thumbnails-wrapper-rtl': !isThumbnailVertical && isRTL },

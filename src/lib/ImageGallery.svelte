@@ -5,13 +5,7 @@
   import ThumbnailWrapper from '$lib/ThumbnailWrapper.svelte';
   import { createEventDispatcher, onMount } from 'svelte';
   import { debounce } from 'throttle-debounce';
-  import {
-    getIgClass,
-    getIgContentClass,
-    getSlideWrapperClass,
-    getThumbnailPositionClassName,
-    getThumbsTranslate
-  } from '$lib/styling';
+  import { getIgClass, getIgContentClass, getSlideWrapperClass } from '$lib/styling';
 
   export let flickThreshold: number = 0.4;
   export let items: TItem[];
@@ -430,6 +424,7 @@
         {stopPropagation}
         {swipingThumbnailTransitionDuration}
         {disableThumbnailSwipe}
+        {gallerySlideWrapperHeight}
         on:slidejump={(event) => {
           slideToIndex(event.detail);
         }}

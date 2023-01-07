@@ -177,7 +177,7 @@ $ig-shadow: 0 2px 2px lighten($ig-black, 10%);
   &.image-gallery-thumbnails-left,
   &.image-gallery-thumbnails-right {
     display: inline-block;
-    width: calc(100% - 110px); // 100px + 10px for margin
+    width: calc(100% - 115px); // 100px + 15px for margin
 
     @media (max-width: $ig-small-screen) {
       width: calc(100% - 87px); // 81px + 6px for margin

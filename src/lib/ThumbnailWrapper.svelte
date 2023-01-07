@@ -16,6 +16,7 @@
 
   export let slideDuration: number;
   export let swipingThumbnailTransitionDuration: number;
+  export let gallerySlideWrapperHeight: number;
 
   let isSwipingThumbnail = false; // currently swiping?
   let isSwipedThumbnail = false; // swiped? relevant for auto-play
@@ -97,14 +98,12 @@
     }
   }
 
-  function getThumbnailBarHeight() {
-    // TODO
-    // if (isThumbnailVertical) {
-    //   const { gallerySlideWrapperHeight } = this.state;
-    //   return { height: gallerySlideWrapperHeight };
-    // }
+  $: getThumbnailBarHeight = () => {
+    if (isThumbnailVertical) {
+      return `height: ${gallerySlideWrapperHeight}px;`;
+    }
     return '';
-  }
+  };
 
   $: igThumbnailClasses = items.map((_, index) => getIgThumbnailClass(index, currentIndex));
 
