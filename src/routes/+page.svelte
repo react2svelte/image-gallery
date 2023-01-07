@@ -71,14 +71,14 @@
           <li>
             <div class="app-interval-input-group">
               <span class="app-interval-label">Play Interval</span>
-              <input class="app-interval-input" type="text" bind:value={slideInterval} />
+              <input class="app-interval-input" type="number" bind:value={slideInterval} />
             </div>
           </li>
 
           <li>
             <div class="app-interval-input-group">
               <span class="app-interval-label">Slide Duration</span>
-              <input class="app-interval-input" type="text" bind:value={slideDuration} />
+              <input class="app-interval-input" type="number" bind:value={slideDuration} />
             </div>
           </li>
 
