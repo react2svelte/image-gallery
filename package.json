@@ -3,7 +3,7 @@
   "version": "0.1.0-alpha.7",
   "license": "MIT",
   "description": "Svelte image gallery ported from react-image-gallery",
-  "homepage": "https://github.com/react2svelte/image-gallery",
+  "homepage": "https://react2svelte.github.io/image-gallery/",
   "repository": {
     "type": "git",
     "url": "https://github.com/react2svelte/image-gallery"
