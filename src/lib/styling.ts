@@ -1,4 +1,4 @@
-import type { Position } from '$lib/types';
+import type { MouseOrKeyboard, Position } from '$lib/types';
 import clsx from 'clsx';
 
 export const getThumbnailPositionClassName = (thumbnailPosition: Position) => {
@@ -41,8 +41,15 @@ export const getThumbsTranslate = (
   return 0;
 };
 
-export const getIgClass = (modalFullscreen: boolean, additionalClass: string) => {
-  return clsx('image-gallery', additionalClass, { 'fullscreen-modal': modalFullscreen });
+export const getIgClass = (
+  modalFullscreen: boolean,
+  additionalClass: string,
+  currentlyUsingMouseOrKeyboard: MouseOrKeyboard
+) => {
+  return clsx('image-gallery', additionalClass, {
+    'fullscreen-modal': modalFullscreen,
+    'image-gallery-using-mouse': currentlyUsingMouseOrKeyboard === 'mouse'
+  });
 };
 
 export const getIgContentClass = (isFullscreen: boolean, thumbnailPosition: Position) => {

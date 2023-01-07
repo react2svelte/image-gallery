@@ -1,5 +1,6 @@
 export type Direction = 'left' | 'right';
 export type Position = 'top' | 'bottom' | 'left' | 'right';
+export type MouseOrKeyboard = 'mouse' | 'keyboard';
 
 export type TImage = {
   srcSet: string;

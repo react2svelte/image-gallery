@@ -1,6 +1,6 @@
 <script lang="ts">
   import './app.css';
-  import type { Position, Direction, TItem } from '$lib/types';
+  import type { Position, Direction, TItem, MouseOrKeyboard } from '$lib/types';
   import SlideWrapper from '$lib/SlideWrapper.svelte';
   import ThumbnailWrapper from '$lib/ThumbnailWrapper.svelte';
   import { createEventDispatcher, onMount } from 'svelte';
@@ -75,6 +75,9 @@
   let lazyLoaded: boolean[] = [];
   let imageLoaded: boolean[] = [];
 
+  /** keep track of mouse vs keyboard usage for a11y */
+  let currentlyUsingMouseOrKeyboard: MouseOrKeyboard = 'mouse';
+
   let thumbnailWrapper: ThumbnailWrapper;
 
   $: canSlide = items.length >= 2;
@@ -142,8 +145,7 @@
   };
 
   function handleKeyDown(event: KeyboardEvent) {
-    // keep track of mouse vs keyboard usage for a11y
-    // this.imageGallery.current.classList.remove('image-gallery-using-mouse');
+    currentlyUsingMouseOrKeyboard = 'keyboard';
 
     if (disableKeyDown) return;
 
@@ -166,6 +168,10 @@
       default:
         break;
     }
+  }
+
+  function handleMouseDown() {
+    currentlyUsingMouseOrKeyboard = 'mouse';
   }
 
   $: togglePlay = () => {
@@ -281,7 +287,7 @@
     }
   };
 
-  $: igClass = getIgClass(modalFullscreen, additionalClass);
+  $: igClass = getIgClass(modalFullscreen, additionalClass, currentlyUsingMouseOrKeyboard);
   $: igContentClass = getIgContentClass(isFullscreen, thumbnailPosition);
   $: slideWrapperClass = getSlideWrapperClass(isRTL, thumbnailPosition);
 
@@ -379,6 +385,7 @@
   aria-live="polite"
   id="imageGallery"
   on:keydown={!useWindowKeyDown ? handleKeyDown : undefined}
+  on:mousedown={handleMouseDown}
 >
   <div class={igContentClass}>
     {#if thumbnailPosition === 'bottom' || thumbnailPosition === 'right'}
