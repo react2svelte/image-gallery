@@ -4,6 +4,8 @@
 
 This is an image gallery for Svelte based on [react-image-gallery](https://github.com/xiaolin/react-image-gallery) v1.2.11.
 
+Have a look at the [demo](https://react2svelte.github.io/image-gallery/)
+
 Features:
 
 - [x] swipe support using [@react2svelte/swipable](https://www.npmjs.com/package/@react2svelte/swipable)
