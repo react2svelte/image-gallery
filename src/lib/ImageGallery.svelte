@@ -123,7 +123,7 @@
       isTransitioning = nextIndex !== currentIndex;
       previousIndex = currentIndex;
       currentIndex = nextIndex;
-      thumbnailWrapper.slideThumbnailBar();
+      thumbnailWrapper.slideThumbnailBar(currentIndex);
       currentSlideOffset = 0;
       onSliding();
     }

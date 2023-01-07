@@ -76,9 +76,9 @@
     thumbsElementScrollHeight = thumbnails.scrollHeight;
   }
 
-  export function slideThumbnailBar() {
+  export function slideThumbnailBar(newIndex: number) {
     const nextTranslate = -getThumbsTranslate(
-      currentIndex,
+      newIndex,
       disableThumbnailScroll,
       thumbnailsWrapperWidth,
       thumbnailsWrapperHeight,
@@ -89,7 +89,7 @@
       return;
     }
 
-    if (currentIndex === 0) {
+    if (newIndex === 0) {
       thumbsTranslate = 0;
       thumbsSwipedTranslate = 0;
     } else {
