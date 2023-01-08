@@ -1,6 +1,7 @@
 export type Direction = 'left' | 'right';
 export type Position = 'top' | 'bottom' | 'left' | 'right';
 export type MouseOrKeyboard = 'mouse' | 'keyboard';
+export type LoadingStrategy = 'eager' | 'lazy';
 
 export type TImage = {
   srcSet: string;
@@ -11,15 +12,14 @@ export type TImageSet = TImage[];
 
 export type TItem = Partial<{
   bulletClass: string;
-  bulletOnClick: Function;
   description: string;
   original: string;
   originalHeight: number;
   originalWidth: number;
-  loading: 'eager' | 'lazy';
+  loading: LoadingStrategy;
   thumbnailHeight: number;
   thumbnailWidth: number;
-  thumbnailLoading: 'eager' | 'lazy' | undefined;
+  thumbnailLoading: LoadingStrategy;
   fullscreen: string;
   originalAlt: string;
   originalTitle: string;
@@ -29,9 +29,7 @@ export type TItem = Partial<{
   thumbnailTitle: string;
   originalClass: string;
   thumbnailClass: string;
-  renderItem: Function;
   imageSet: TImageSet[];
-  renderThumbInner: Function;
   srcset: string;
   sizes: string;
 }>;

@@ -86,7 +86,6 @@
   /** keep track of mouse vs keyboard usage for a11y */
   let currentlyUsingMouseOrKeyboard: MouseOrKeyboard = 'mouse';
 
-  $: canSlide = items.length >= 2;
   $: canSlidePrevious = currentIndex > 0;
   $: canSlideNext = currentIndex < items.length - 1;
   $: canSlideLeft = infinite || (isRTL ? canSlideNext : canSlidePrevious);

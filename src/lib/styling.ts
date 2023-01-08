@@ -249,10 +249,10 @@ export const getThumbnailStyle = (
     `;
 };
 
-export const getIgThumbnailClass = (index: number, currentIndex: number) => {
-  return clsx(
-    'image-gallery-thumbnail',
-    // thumbnailClass,
-    { active: currentIndex === index }
-  );
+export const getIgThumbnailClass = (
+  index: number,
+  currentIndex: number,
+  thumbnailClass: string | undefined
+) => {
+  return clsx('image-gallery-thumbnail', thumbnailClass, { active: currentIndex === index });
 };

@@ -4,7 +4,6 @@
   import { createEventDispatcher } from 'svelte';
   import { getIgThumbnailClass, getThumbnailStyle, getThumbsTranslate } from '$lib/styling';
   import ThumbnailSwipeWrapper from './ThumbnailSwipeWrapper.svelte';
-  import { element } from 'svelte/internal';
 
   // settings
   export let items: TItem[];
@@ -32,7 +31,6 @@
 
   // the thumbnails container element
   let thumbnails: HTMLElement;
-  let swipeWrapper: ThumbnailSwipeWrapper;
 
   let thumbnailsWrapperWidth: number;
   let thumbnailsWrapperHeight: number;
@@ -114,13 +112,14 @@
     return '';
   };
 
-  $: igThumbnailClasses = items.map((_, index) => getIgThumbnailClass(index, currentIndex));
+  $: igThumbnailClasses = items.map((item, index) =>
+    getIgThumbnailClass(index, currentIndex, item.thumbnailClass)
+  );
 
   const dispatch = createEventDispatcher();
 </script>
 
 <ThumbnailSwipeWrapper
-  bind:this={swipeWrapper}
   {stopPropagation}
   {isThumbnailVertical}
   {isRTL}
@@ -135,7 +134,7 @@
     isSwipingThumbnail = true;
     thumbsTranslate = thumbsSwipedTranslate + e.detail;
   }}
-  on:thumbnailswiped={(e) => {
+  on:thumbnailswiped={() => {
     isSwipingThumbnail = false;
     isSwipedThumbnail = true;
     thumbsSwipedTranslate = thumbsTranslate;

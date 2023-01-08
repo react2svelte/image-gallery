@@ -1,7 +1,7 @@
 <script lang="ts">
   import './+page.css';
   import ImageGallery from '$lib/ImageGallery.svelte';
-  import type { Position } from '$lib/types';
+  import type { Position, TItem } from '$lib/types';
 
   let startIndex = 0;
   // TODO Once the ImageGallery supports rendering of custom items, we can showcase videos
@@ -28,13 +28,15 @@
   const PREFIX_URL = 'https://raw.githubusercontent.com/react2svelte/image-gallery/main/static/';
 
   function _getStaticImages() {
-    let images = [];
-    for (let i = 2; i < 12; i++) {
+    let images: TItem[] = [];
+    for (let i = 1; i < 12; i++) {
       images.push({
         original: `${PREFIX_URL}${i}.jpg`,
         thumbnail: `${PREFIX_URL}${i}t.jpg`
       });
     }
+    images[1].description = 'Two lakes surrounded by mountains';
+    images[3].thumbnailLabel = 'Sunset';
 
     return images;
   }
@@ -69,14 +71,14 @@
       <div class="app-sandbox-content">
         <h2 class="app-header">Settings</h2>
 
-        <li>
-          <div class="app-interval-input-group">
-            <span class="app-interval-label">Start index</span>
-            <input class="app-interval-input" type="number" bind:value={startIndex} />
-          </div>
-        </li>
-
         <ul class="app-buttons">
+          <li>
+            <div class="app-interval-input-group">
+              <span class="app-interval-label">Start index</span>
+              <input class="app-interval-input" type="number" bind:value={startIndex} />
+            </div>
+          </li>
+
           <li>
             <div class="app-interval-input-group">
               <span class="app-interval-label">Play Interval</span>
