@@ -48,7 +48,7 @@
   $: canSlideRight = infinite || (isRTL ? canSlidePrevious : canSlideNext);
 
   // the element of this wrapper, useful to observe resize changes
-  let elem: Element;
+  let elem: HTMLElement;
 
   export function getElem() {
     return elem;

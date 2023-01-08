@@ -93,6 +93,7 @@
   $: canSlideRight = infinite || (isRTL ? canSlidePrevious : canSlideNext);
 
   // component bindings. These vars are set from bindings in the HTML below
+  let imageGallery: HTMLElement;
   let slideWrapper: SlideWrapper;
   let thumbnailWrapper: ThumbnailWrapper;
 
@@ -229,8 +230,7 @@
 
   $: fullScreen = () => {
     if (useBrowserFullscreen) {
-      const imageGalleryRef = document.getElementById('imageGallery')!;
-      imageGalleryRef.requestFullscreen();
+      imageGallery.requestFullscreen();
     } else {
       modalFullscreen = true;
     }
@@ -287,8 +287,7 @@
     const fullScreenElement = document.fullscreenElement;
 
     // check if screenchange element is the gallery
-    const imageGalleryRef = document.getElementById('imageGallery');
-    const _isFullscreen = imageGalleryRef === fullScreenElement;
+    const _isFullscreen = imageGallery === fullScreenElement;
     dispatch('screenchange', { fullscreen: _isFullscreen });
     if (useBrowserFullscreen) {
       isFullscreen = _isFullscreen;
@@ -347,14 +346,13 @@
     //   return;
     // }
 
-    const imageGalleryRef = document.getElementById('imageGallery');
-    if (imageGalleryRef) {
-      galleryWidth = imageGalleryRef.offsetWidth;
+    if (imageGallery) {
+      galleryWidth = imageGallery.offsetWidth;
     }
 
-    const slideWrapperRef = document.getElementById('slideWrapper');
-    if (slideWrapperRef) {
-      gallerySlideWrapperHeight = slideWrapperRef.offsetHeight;
+    const slideWrapperDiv = slideWrapper.getElem();
+    if (slideWrapperDiv) {
+      gallerySlideWrapperHeight = slideWrapperDiv.offsetHeight;
     }
   };
 
@@ -389,7 +387,7 @@
 <div
   class={igClass}
   aria-live="polite"
-  id="imageGallery"
+  bind:this={imageGallery}
   on:keydown={!useWindowKeyDown ? handleKeyDown : undefined}
   on:mousedown={handleMouseDown}
 >
