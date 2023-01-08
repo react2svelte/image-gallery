@@ -172,6 +172,54 @@
     >
       <div class="image-gallery-slides">
         {#each items as item, index}
+          {#if $$slots.render}
+            <Slide
+              {index}
+              alignment={alignmentClasses[index]}
+              originalClass={item.originalClass}
+              slideStyle={slideStyles[index]}
+              showItem={showItems[index]}
+              {item}
+              isFullscreen={false}
+              on:imageload={(event) => dispatch('imageload', { index, event })}
+              on:imageerror={(event) => dispatch('imageerror', { index, event })}
+            >
+              <slot slot="render" name="render" {item} />
+            </Slide>
+          {:else}
+            <Slide
+              {index}
+              alignment={alignmentClasses[index]}
+              originalClass={item.originalClass}
+              slideStyle={slideStyles[index]}
+              showItem={showItems[index]}
+              {item}
+              isFullscreen={false}
+              on:imageload={(event) => dispatch('imageload', { index, event })}
+              on:imageerror={(event) => dispatch('imageerror', { index, event })}
+            />
+          {/if}
+        {/each}
+      </div>
+    </SwipeWrapper>
+  {:else}
+    <div class="image-gallery-slides">
+      {#each items as item, index}
+        {#if $$slots.render}
+          <Slide
+            {index}
+            alignment={alignmentClasses[index]}
+            originalClass={item.originalClass}
+            slideStyle={slideStyles[index]}
+            showItem={showItems[index]}
+            {item}
+            isFullscreen={false}
+            on:imageload={(event) => dispatch('imageload', { index, event })}
+            on:imageerror={(event) => dispatch('imageerror', { index, event })}
+          >
+            <slot slot="render" name="render" {item} />
+          </Slide>
+        {:else}
           <Slide
             {index}
             alignment={alignmentClasses[index]}
@@ -183,23 +231,7 @@
             on:imageload={(event) => dispatch('imageload', { index, event })}
             on:imageerror={(event) => dispatch('imageerror', { index, event })}
           />
-        {/each}
-      </div>
-    </SwipeWrapper>
-  {:else}
-    <div class="image-gallery-slides">
-      {#each items as item, index}
-        <Slide
-          {index}
-          alignment={alignmentClasses[index]}
-          originalClass={item.originalClass}
-          slideStyle={slideStyles[index]}
-          showItem={showItems[index]}
-          {item}
-          isFullscreen={false}
-          on:imageload={(event) => dispatch('imageload', { index, event })}
-          on:imageerror={(event) => dispatch('imageerror', { index, event })}
-        />
+        {/if}
       {/each}
     </div>
   {/if}

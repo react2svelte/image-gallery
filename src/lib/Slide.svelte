@@ -39,21 +39,23 @@
   role="button"
 >
   {#if showItem}
-    <Item
-      description={item.description}
-      fullscreen={item.fullscreen}
-      {isFullscreen}
-      original={item.original}
-      originalAlt={item.originalAlt}
-      originalHeight={item.originalHeight}
-      originalWidth={item.originalWidth}
-      originalTitle={item.originalTitle}
-      sizes={item.sizes}
-      loading={item.loading}
-      srcset={item.srcset}
-      on:imageload
-      on:imageerror
-    />
+    <slot name="render">
+      <Item
+        description={item.description}
+        fullscreen={item.fullscreen}
+        {isFullscreen}
+        original={item.original}
+        originalAlt={item.originalAlt}
+        originalHeight={item.originalHeight}
+        originalWidth={item.originalWidth}
+        originalTitle={item.originalTitle}
+        sizes={item.sizes}
+        loading={item.loading}
+        srcset={item.srcset}
+        on:imageload
+        on:imageerror
+      />
+    </slot>
   {:else}
     <div style="height: 100%" />
   {/if}
