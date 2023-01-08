@@ -25,7 +25,7 @@
   let disableSwipe = false;
   let disableThumbnailSwipe = false;
 
-  const PREFIX_URL = 'https://raw.githubusercontent.com/xiaolin/react-image-gallery/master/static/';
+  const PREFIX_URL = 'https://raw.githubusercontent.com/react2svelte/image-gallery/main/static/';
 
   function _getStaticImages() {
     let images = [];
