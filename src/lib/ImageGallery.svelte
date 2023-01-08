@@ -392,45 +392,90 @@
 >
   <div class={igContentClass}>
     {#if thumbnailPosition === 'bottom' || thumbnailPosition === 'right'}
-      <SlideWrapper
-        bind:this={slideWrapper}
-        {slideWrapperClass}
-        {items}
-        {showNav}
-        {showBullets}
-        {showIndex}
-        {currentIndex}
-        {previousIndex}
-        {infinite}
-        {isRTL}
-        {isFullscreen}
-        {showFullscreenButton}
-        {isPlaying}
-        {showPlayButton}
-        {currentSlideOffset}
-        {isTransitioning}
-        {galleryWidth}
-        {disableSwipe}
-        {stopPropagation}
-        {indexSeparator}
-        {lazyLoad}
-        {lazyLoaded}
-        {swipeThreshold}
-        {flickThreshold}
-        {transitionStyle}
-        {swipingTransitionStyle}
-        {useTranslate3D}
-        on:slideleft={() => slideLeft()}
-        on:slideright={() => slideRight()}
-        on:slidejump={(event) => {
-          slideToIndex(event.detail);
-        }}
-        on:playtoggle={togglePlay}
-        on:fullscreentoggle={toggleFullscreen}
-        on:lazyload={onLazyLoad}
-        on:imageload={handleImageLoad}
-        on:imageerror={handleImageError}
-      />
+      {#if $$slots.render}
+        <SlideWrapper
+          bind:this={slideWrapper}
+          {slideWrapperClass}
+          {items}
+          {showNav}
+          {showBullets}
+          {showIndex}
+          {currentIndex}
+          {previousIndex}
+          {infinite}
+          {isRTL}
+          {isFullscreen}
+          {showFullscreenButton}
+          {isPlaying}
+          {showPlayButton}
+          {currentSlideOffset}
+          {isTransitioning}
+          {galleryWidth}
+          {disableSwipe}
+          {stopPropagation}
+          {indexSeparator}
+          {lazyLoad}
+          {lazyLoaded}
+          {swipeThreshold}
+          {flickThreshold}
+          {transitionStyle}
+          {swipingTransitionStyle}
+          {useTranslate3D}
+          on:slideleft={() => slideLeft()}
+          on:slideright={() => slideRight()}
+          on:slidejump={(event) => {
+            slideToIndex(event.detail);
+          }}
+          on:playtoggle={togglePlay}
+          on:fullscreentoggle={toggleFullscreen}
+          on:lazyload={onLazyLoad}
+          on:imageload={handleImageLoad}
+          on:imageerror={handleImageError}
+          let:item
+        >
+          <slot slot="render" name="render" {item} />
+        </SlideWrapper>
+      {:else}
+        <SlideWrapper
+          bind:this={slideWrapper}
+          {slideWrapperClass}
+          {items}
+          {showNav}
+          {showBullets}
+          {showIndex}
+          {currentIndex}
+          {previousIndex}
+          {infinite}
+          {isRTL}
+          {isFullscreen}
+          {showFullscreenButton}
+          {isPlaying}
+          {showPlayButton}
+          {currentSlideOffset}
+          {isTransitioning}
+          {galleryWidth}
+          {disableSwipe}
+          {stopPropagation}
+          {indexSeparator}
+          {lazyLoad}
+          {lazyLoaded}
+          {swipeThreshold}
+          {flickThreshold}
+          {transitionStyle}
+          {swipingTransitionStyle}
+          {useTranslate3D}
+          on:slideleft={() => slideLeft()}
+          on:slideright={() => slideRight()}
+          on:slidejump={(event) => {
+            slideToIndex(event.detail);
+          }}
+          on:playtoggle={togglePlay}
+          on:fullscreentoggle={toggleFullscreen}
+          on:lazyload={onLazyLoad}
+          on:imageload={handleImageLoad}
+          on:imageerror={handleImageError}
+        />
+      {/if}
     {/if}
     {#if showThumbnails}
       <ThumbnailWrapper
@@ -455,45 +500,90 @@
       />
     {/if}
     {#if thumbnailPosition === 'top' || thumbnailPosition === 'left'}
-      <SlideWrapper
-        bind:this={slideWrapper}
-        {slideWrapperClass}
-        {items}
-        {showNav}
-        {showBullets}
-        {showIndex}
-        {currentIndex}
-        {previousIndex}
-        {infinite}
-        {isRTL}
-        {isFullscreen}
-        {showFullscreenButton}
-        {isPlaying}
-        {showPlayButton}
-        {currentSlideOffset}
-        {isTransitioning}
-        {galleryWidth}
-        {disableSwipe}
-        {stopPropagation}
-        {indexSeparator}
-        {lazyLoad}
-        {lazyLoaded}
-        {swipeThreshold}
-        {flickThreshold}
-        {transitionStyle}
-        {swipingTransitionStyle}
-        {useTranslate3D}
-        on:slideleft={() => slideLeft()}
-        on:slideright={() => slideRight()}
-        on:slidejump={(event) => {
-          slideToIndex(event.detail);
-        }}
-        on:playtoggle={togglePlay}
-        on:fullscreentoggle={toggleFullscreen}
-        on:lazyload={onLazyLoad}
-        on:imageload={handleImageLoad}
-        on:imageerror={handleImageError}
-      />
+      {#if $$slots.render}
+        <SlideWrapper
+          bind:this={slideWrapper}
+          {slideWrapperClass}
+          {items}
+          {showNav}
+          {showBullets}
+          {showIndex}
+          {currentIndex}
+          {previousIndex}
+          {infinite}
+          {isRTL}
+          {isFullscreen}
+          {showFullscreenButton}
+          {isPlaying}
+          {showPlayButton}
+          {currentSlideOffset}
+          {isTransitioning}
+          {galleryWidth}
+          {disableSwipe}
+          {stopPropagation}
+          {indexSeparator}
+          {lazyLoad}
+          {lazyLoaded}
+          {swipeThreshold}
+          {flickThreshold}
+          {transitionStyle}
+          {swipingTransitionStyle}
+          {useTranslate3D}
+          on:slideleft={() => slideLeft()}
+          on:slideright={() => slideRight()}
+          on:slidejump={(event) => {
+            slideToIndex(event.detail);
+          }}
+          on:playtoggle={togglePlay}
+          on:fullscreentoggle={toggleFullscreen}
+          on:lazyload={onLazyLoad}
+          on:imageload={handleImageLoad}
+          on:imageerror={handleImageError}
+          let:item
+        >
+          <slot slot="render" name="render" {item} />
+        </SlideWrapper>
+      {:else}
+        <SlideWrapper
+          bind:this={slideWrapper}
+          {slideWrapperClass}
+          {items}
+          {showNav}
+          {showBullets}
+          {showIndex}
+          {currentIndex}
+          {previousIndex}
+          {infinite}
+          {isRTL}
+          {isFullscreen}
+          {showFullscreenButton}
+          {isPlaying}
+          {showPlayButton}
+          {currentSlideOffset}
+          {isTransitioning}
+          {galleryWidth}
+          {disableSwipe}
+          {stopPropagation}
+          {indexSeparator}
+          {lazyLoad}
+          {lazyLoaded}
+          {swipeThreshold}
+          {flickThreshold}
+          {transitionStyle}
+          {swipingTransitionStyle}
+          {useTranslate3D}
+          on:slideleft={() => slideLeft()}
+          on:slideright={() => slideRight()}
+          on:slidejump={(event) => {
+            slideToIndex(event.detail);
+          }}
+          on:playtoggle={togglePlay}
+          on:fullscreentoggle={toggleFullscreen}
+          on:lazyload={onLazyLoad}
+          on:imageload={handleImageLoad}
+          on:imageerror={handleImageError}
+        />
+      {/if}
     {/if}
   </div>
 </div>

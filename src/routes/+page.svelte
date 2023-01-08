@@ -2,6 +2,7 @@
   import './+page.css';
   import ImageGallery from '$lib/ImageGallery.svelte';
   import type { Position, TItem } from '$lib/types';
+  import Item from '$lib/Item.svelte';
 
   let startIndex = 0;
   // TODO Once the ImageGallery supports rendering of custom items, we can showcase videos
@@ -24,8 +25,9 @@
   let useWindowKeyDown = true;
   let disableSwipe = false;
   let disableThumbnailSwipe = false;
+  let useCustomRender = true;
 
-  const PREFIX_URL = 'https://raw.githubusercontent.com/react2svelte/image-gallery/main/static/';
+  const PREFIX_URL = '/';
 
   function _getStaticImages() {
     let images: TItem[] = [];
@@ -42,30 +44,95 @@
   }
 
   const images = _getStaticImages();
+
+  let rotationDegree = 0;
+  let rotationDirectionIncreasing = true;
+
+  setInterval(() => {
+    if (rotationDegree >= 6) {
+      rotationDirectionIncreasing = false;
+    } else if (rotationDegree <= -6) {
+      rotationDirectionIncreasing = true;
+    }
+    if (rotationDirectionIncreasing) {
+      rotationDegree += 1;
+    } else {
+      rotationDegree -= 1;
+    }
+  }, 300);
 </script>
 
 <div class="gallery-container">
   <section class="app">
-    <ImageGallery
-      additionalClass="app-image-gallery"
-      items={images}
-      {startIndex}
-      {infinite}
-      {showBullets}
-      {showFullscreenButton}
-      {showPlayButton}
-      {showThumbnails}
-      {showIndex}
-      {showNav}
-      {isRTL}
-      {thumbnailPosition}
-      {slideDuration}
-      {slideInterval}
-      {slideOnThumbnailOver}
-      {useWindowKeyDown}
-      {disableSwipe}
-      {disableThumbnailSwipe}
-    />
+    {#if useCustomRender}
+      <ImageGallery
+        additionalClass="app-image-gallery"
+        items={images}
+        {startIndex}
+        {infinite}
+        {showBullets}
+        {showFullscreenButton}
+        {showPlayButton}
+        {showThumbnails}
+        {showIndex}
+        {showNav}
+        {isRTL}
+        {thumbnailPosition}
+        {slideDuration}
+        {slideInterval}
+        {slideOnThumbnailOver}
+        {useWindowKeyDown}
+        {disableSwipe}
+        {disableThumbnailSwipe}
+      >
+        <div slot="render" let:item style="padding: 30px;">
+          <div
+            style={`border: 6px dotted blue; padding: 2px; rotate: ${rotationDegree}deg;
+        transition-property: all;
+transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+transition-duration: 300ms;`}
+          >
+            <div style="border: 6px dotted orange; padding: 2px;">
+              <div style="border: 6px dotted green; padding: 2px;">
+                <Item
+                  description={item.description}
+                  fullscreen={item.fullscreen}
+                  original={item.original}
+                  originalAlt={item.originalAlt}
+                  originalHeight={item.originalHeight}
+                  originalWidth={item.originalWidth}
+                  originalTitle={item.originalTitle}
+                  sizes={item.sizes}
+                  loading={item.loading}
+                  srcset={item.srcset}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </ImageGallery>
+    {:else}
+      <ImageGallery
+        additionalClass="app-image-gallery"
+        items={images}
+        {startIndex}
+        {infinite}
+        {showBullets}
+        {showFullscreenButton}
+        {showPlayButton}
+        {showThumbnails}
+        {showIndex}
+        {showNav}
+        {isRTL}
+        {thumbnailPosition}
+        {slideDuration}
+        {slideInterval}
+        {slideOnThumbnailOver}
+        {useWindowKeyDown}
+        {disableSwipe}
+        {disableThumbnailSwipe}
+      />
+    {/if}
 
     <div class="app-sandbox">
       <div class="app-sandbox-content">
@@ -107,6 +174,10 @@
         </ul>
 
         <ul class="app-checkboxes">
+          <li>
+            <input id="use_custom_render" type="checkbox" bind:checked={useCustomRender} />
+            <label for="use_custom_render">use custom rendering</label>
+          </li>
           <li>
             <input id="infinite" type="checkbox" bind:checked={infinite} />
             <label for="infinite">allow infinite sliding</label>
