@@ -2,9 +2,9 @@
 
 [![npm version](https://img.shields.io/npm/v/@react2svelte/image-gallery.svg)](https://www.npmjs.com/package/@react2svelte/image-gallery)
 
-This is an image gallery for Svelte based on [react-image-gallery](https://github.com/xiaolin/react-image-gallery) v1.2.11.
+**This is an image gallery for Svelte based on [react-image-gallery](https://github.com/xiaolin/react-image-gallery) v1.2.11. Many thanks to all the contributors of that package for their hard work!**
 
-Have a look at the [demo](https://react2svelte.github.io/image-gallery/)
+Have a look at the [demo](https://react2svelte.github.io/image-gallery/).
 
 Features:
 
@@ -27,7 +27,7 @@ npm i @react2svelte/image-gallery
 
 Use it in your component/page
 
-```js
+```html
 <script lang="ts">
   import ImageGallery from '@react2svelte/image-gallery';
 
@@ -52,7 +52,7 @@ Use it in your component/page
 
 ### Demo
 
-You can also have a look at the demo page of the package. At the moment this has to be done locally:
+You can also have a look at the [demo page](https://react2svelte.github.io/image-gallery/) of the package. To run it locally:
 
 ```
 git clone https://github.com/react2svelte/image-gallery.git
@@ -89,8 +89,6 @@ And open http://localhost:5173/
     - `srcSet` - image srcset (html5 attribute)
     - `sizes` - image sizes (html5 attribute)
     - `bulletClass` - extra class for the bullet of the item
-    - `bulletOnClick` - `callback({item, itemIndex, currentIndex})`
-      - A function that will be called upon bullet click.
 - `infinite`: Boolean, default `true`
   - infinite sliding
 - `lazyLoad`: Boolean, default `false`
@@ -143,21 +141,20 @@ And open http://localhost:5173/
 
 Already supported
 
-- [x] `slide`: Function, `callback(currentIndex)`
-- [x] `beforeslide`: Function, `callback(nextIndex)`
-- [x] `screenchange`: Function, `callback(boolean)`
+- [x] `slide`: Function, `details: { currentIndex: number }`
+- [x] `beforeslide`: Function, `details: { nextIndex: number }`
+- [x] `screenchange`: Function, `details: { fullscreen: boolean }`
   - When fullscreen is toggled a boolean is passed to the callback
-- [x] `pause`: Function, `callback(currentIndex)`
-- [x] `play`: Function, `callback(currentIndex)`
+- [x] `pause`: Function, `details: { currentIndex: number }`
+- [x] `play`: Function, `details: { currentIndex: number }`
+- [x] `imageload`: Function, `details: { index: number, event }`
+- [x] `imageerror`: Function, `details: { index: number, event }`
 
 Not yet supported
 
-- [ ] `onImageError`: Function, `callback(event)`
-  - overrides onErrorImage
 - [ ] `onThumbnailError`: Function, `callback(event)`
   - overrides onErrorImage
 - [ ] `onThumbnailClick`: Function, `callback(event, index)`
-- [ ] `onImageLoad`: Function, `callback(event)`
 - [ ] `onClick`: Function, `callback(event)`
 - [ ] `onTouchMove`: Function, `callback(event) on gallery slide`
 - [ ] `onTouchEnd`: Function, `callback(event) on gallery slide`
