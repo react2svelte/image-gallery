@@ -401,7 +401,6 @@
   };
 </script>
 
-<!-- TODO: we use an id as a replacement for React's "ref" -->
 <div
   class={igClass}
   aria-live="polite"
