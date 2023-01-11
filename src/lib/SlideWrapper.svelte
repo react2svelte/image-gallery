@@ -135,7 +135,6 @@
   });
 </script>
 
-<!-- TODO: we use an id as a replacement for React's "ref" -->
 <div class={slideWrapperClass} bind:this={elem}>
   <!-- TODO: render custom controls -->
 

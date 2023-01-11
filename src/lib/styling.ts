@@ -6,6 +6,7 @@ export const getThumbnailPositionClassName = (thumbnailPosition: Position) => {
 };
 
 export const getThumbsTranslate = (
+  thumbsElement: HTMLElement,
   indexDifference: number,
   disableThumbnailScroll: boolean,
   thumbnailsWrapperWidth: number,
@@ -16,7 +17,6 @@ export const getThumbsTranslate = (
   // the scroll space that is hidden on the left & right / top & bottom
   // when the screen is not large enough to fit all thumbnails
   let hiddenScroll;
-  const thumbsElement = document.getElementById('thumbnail');
 
   if (disableThumbnailScroll) return 0;
 

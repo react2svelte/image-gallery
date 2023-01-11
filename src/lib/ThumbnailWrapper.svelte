@@ -22,13 +22,12 @@
   let isSwipingThumbnail = false; // currently swiping?
   let isSwipedThumbnail = false; // swiped? relevant for auto-play
 
-  // the root element
-  let elem: Element;
-
   export function getElem() {
     return elem;
   }
 
+  // the root element
+  let elem: Element;
   // the thumbnails container element
   let thumbnails: HTMLElement;
 
@@ -72,6 +71,7 @@
   function handleResize() {
     // Adjust thumbnail container when thumbnail width or height is adjusted
     thumbsTranslate = getThumbsTranslate(
+      thumbnails,
       currentIndex,
       disableThumbnailScroll,
       thumbnailsWrapperWidth,
@@ -85,6 +85,7 @@
 
   export function slideThumbnailBar(newIndex: number) {
     const nextTranslate = -getThumbsTranslate(
+      thumbnails,
       newIndex,
       disableThumbnailScroll,
       thumbnailsWrapperWidth,
@@ -146,11 +147,9 @@
       class="image-gallery-thumbnails-container"
       style={thumbnailStyle}
       aria-label="Thumbnail Navigation"
-      id="thumbnail"
     >
       <!-- These HTML ids are used to determine the width and height of the elements from another
       component.
-      TODO: we use this as a replacement for React's "ref" but there should be a better solution.
       -->
       {#each items as item, index}
         <Thumbnail
