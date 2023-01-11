@@ -360,10 +360,9 @@
 
   $: handleResize = () => {
     // component has been unmounted
-    // TODO
-    // if (!this.imageGallery) {
-    //   return;
-    // }
+    if (!imageGallery) {
+      return;
+    }
 
     if (imageGallery) {
       galleryWidth = imageGallery.offsetWidth;
