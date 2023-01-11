@@ -137,6 +137,17 @@ And open http://localhost:5173/
   - If `true`, listens to keydown events on window (window.addEventListener)
   - If `false`, listens to keydown events on image gallery element (imageGalleryElement.addEventListener)
 
+## Functions
+
+The following functions can be accessed:
+
+- `play()`: plays the slides
+- `pause()`: pauses the slides
+- `fullScreen()`: activates full screen
+- `exitFullScreen()`: deactivates full screen
+- `slideToIndex(index)`: slides to a specific index
+- `getCurrentIndex()`: returns the current index
+
 ## Events
 
 Already supported

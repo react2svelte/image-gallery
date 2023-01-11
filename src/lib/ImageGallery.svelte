@@ -111,13 +111,13 @@
     slideToIndex(nextIndex);
   }
 
-  function slideToIndex(index: number) {
+  export function slideToIndex(index: number) {
     if (!isTransitioning) {
       // TODO The original code is checking whether an event is provided
       if (playPauseIntervalId) {
         // user triggered event while ImageGallery is playing, reset interval
-        pause(false);
-        play(false);
+        _pause(false);
+        _play(false);
       }
 
       const slideCount = items.length - 1;
@@ -138,6 +138,26 @@
       currentSlideOffset = 0;
       onSliding();
     }
+  }
+
+  export function play() {
+    _play();
+  }
+
+  export function pause() {
+    _pause();
+  }
+
+  export function fullScreen() {
+    _fullScreen();
+  }
+
+  export function exitFullScreen() {
+    _exitFullScreen();
+  }
+
+  export function getCurrentIndex() {
+    return currentIndex;
   }
 
   $: onSliding = () => {
@@ -170,7 +190,7 @@
         break;
       case 'Escape':
         if (isFullscreen && !useBrowserFullscreen) {
-          exitFullScreen();
+          _exitFullScreen();
         }
         break;
       default:
@@ -184,21 +204,21 @@
 
   $: togglePlay = () => {
     if (playPauseIntervalId) {
-      pause();
+      _pause();
     } else {
-      play();
+      _play();
     }
   };
 
   $: pauseOrPlay = () => {
     if (!infinite && !canSlideRight) {
-      pause();
+      _pause();
     } else {
       slideToIndex(currentIndex + 1);
     }
   };
 
-  $: play = (shouldCallOnPlay = true) => {
+  $: _play = (shouldCallOnPlay = true) => {
     if (!playPauseIntervalId) {
       isPlaying = true;
       playPauseIntervalId = window.setInterval(pauseOrPlay, Math.max(slideInterval, slideDuration));
@@ -208,7 +228,7 @@
     }
   };
 
-  $: pause = (shouldCallOnPause = true) => {
+  $: _pause = (shouldCallOnPause = true) => {
     if (playPauseIntervalId) {
       window.clearInterval(playPauseIntervalId);
       playPauseIntervalId = null;
@@ -221,13 +241,13 @@
 
   $: toggleFullscreen = () => {
     if (isFullscreen) {
-      exitFullScreen();
+      _exitFullScreen();
     } else {
-      fullScreen();
+      _fullScreen();
     }
   };
 
-  $: fullScreen = () => {
+  $: _fullScreen = () => {
     if (useBrowserFullscreen) {
       imageGallery.requestFullscreen();
     } else {
@@ -237,7 +257,7 @@
     dispatch('screenchange', { fullscreen: true });
   };
 
-  $: exitFullScreen = () => {
+  $: _exitFullScreen = () => {
     if (isFullscreen) {
       if (useBrowserFullscreen) {
         document.exitFullscreen();
@@ -301,7 +321,7 @@
     initSlideWrapperResizeObserver();
     initThumbnailWrapperResizeObserver();
     if (autoPlay) {
-      play();
+      _play();
     }
   });
 
@@ -363,7 +383,7 @@
     }
     thumbnailMouseOverTimer = window.setTimeout(() => {
       slideToIndex(index);
-      pause();
+      _pause();
     }, 300);
   };
 
@@ -372,7 +392,7 @@
       window.clearTimeout(thumbnailMouseOverTimer);
       thumbnailMouseOverTimer = null;
       if (autoPlay) {
-        play();
+        _play();
       }
     }
   };
