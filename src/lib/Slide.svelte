@@ -28,7 +28,7 @@
   tabIndex="-1"
   class={`image-gallery-slide ${alignment} ${originalClass ?? ''}`}
   style={slideStyle}
-  on:click={() => dispatch('click')}
+  on:click={(e) => dispatch('click', e)}
   on:keyup={handleSlideKeyUp}
   on:touchmove={() => dispatch('touchmove')}
   on:touchend={() => dispatch('touchend')}

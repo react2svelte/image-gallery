@@ -182,6 +182,7 @@
             isFullscreen={false}
             on:imageload={(event) => dispatch('imageload', { index, event })}
             on:imageerror={(event) => dispatch('imageerror', { index, event })}
+            on:click
           />
         {/each}
       </div>
@@ -199,6 +200,7 @@
           isFullscreen={false}
           on:imageload={(event) => dispatch('imageload', { index, event })}
           on:imageerror={(event) => dispatch('imageerror', { index, event })}
+          on:click
         />
       {/each}
     </div>

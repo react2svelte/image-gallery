@@ -10,7 +10,7 @@ Features:
 
 - [x] swipe support using [@react2svelte/swipable](https://www.npmjs.com/package/@react2svelte/swipable)
 - [x] lots of other things
-- [x] `play`, `pause`, `slide`, `beforeslide`, `screenchange` events
+- [x] `play`, `pause`, `slide`, `beforeslide`, `screenchange`, `imageload`, `imageerror`, `click` events
 
 Not yet ported
 
@@ -149,13 +149,13 @@ Already supported
 - [x] `play`: Function, `details: { currentIndex: number }`
 - [x] `imageload`: Function, `details: { index: number, event }`
 - [x] `imageerror`: Function, `details: { index: number, event }`
+- [x] `click`: Function, `details: event`
 
 Not yet supported
 
 - [ ] `onThumbnailError`: Function, `callback(event)`
   - overrides onErrorImage
 - [ ] `onThumbnailClick`: Function, `callback(event, index)`
-- [ ] `onClick`: Function, `callback(event)`
 - [ ] `onTouchMove`: Function, `callback(event) on gallery slide`
 - [ ] `onTouchEnd`: Function, `callback(event) on gallery slide`
 - [ ] `onTouchStart`: Function, `callback(event) on gallery slide`

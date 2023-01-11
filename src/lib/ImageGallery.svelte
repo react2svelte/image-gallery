@@ -430,6 +430,7 @@
         on:lazyload={onLazyLoad}
         on:imageload={handleImageLoad}
         on:imageerror={handleImageError}
+        on:click
       />
     {/if}
     {#if showThumbnails}
@@ -493,6 +494,7 @@
         on:lazyload={onLazyLoad}
         on:imageload={handleImageLoad}
         on:imageerror={handleImageError}
+        on:click
       />
     {/if}
   </div>
