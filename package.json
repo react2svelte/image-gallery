@@ -1,6 +1,6 @@
 {
   "name": "@react2svelte/image-gallery",
-  "version": "0.1.1",
+  "version": "1.0.0",
   "license": "MIT",
   "description": "Svelte image gallery ported from react-image-gallery",
   "homepage": "https://react2svelte.github.io/image-gallery/",
