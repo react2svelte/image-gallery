@@ -60,7 +60,7 @@ Use it in your component/page
 
 ### Demo
 
-You can also have a look at the [demo page](https://react2svelte.github.io/image-gallery/) of the package. To run it locally:
+You can also have a look at the [demo page](https://react2svelte.github.io/image-gallery/) of the package, it allows setting library settings interactively. To run it locally:
 
 ```
 git clone https://github.com/react2svelte/image-gallery.git
