@@ -4,9 +4,7 @@
   - thumbsslideoffset
 -->
 <script lang="ts">
-  import { swipable } from '@react2svelte/swipable/main';
-  import { UP, DOWN, LEFT, RIGHT } from '@react2svelte/swipable/types';
-  import type { SwipeEventData } from '@react2svelte/swipable/types';
+  import { swipeable, UP, DOWN, LEFT, RIGHT, type SwipeEventData } from '@react2svelte/swipeable';
   import { createEventDispatcher } from 'svelte';
   import clsx from 'clsx';
   import { getThumbnailPositionClassName } from './styling';
@@ -137,7 +135,7 @@
 
 <div
   class={cls}
-  use:swipable={{ delta: 0 }}
+  use:swipeable={{ delta: 0 }}
   on:swiping={(e) => handleThumbnailSwiping(e.detail)}
   on:swiped={() => handleOnThumbnailSwiped()}
 >
