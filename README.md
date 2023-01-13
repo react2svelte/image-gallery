@@ -4,18 +4,26 @@
 
 **This is an image gallery for Svelte based on [react-image-gallery](https://github.com/xiaolin/react-image-gallery) v1.2.11. Many thanks to all the contributors of that package for their hard work!**
 
-Have a look at the [demo](https://react2svelte.github.io/image-gallery/).
+### Live Demo (try it on mobile for swipe support)
 
-Features:
+[react2svelte.github.io/image-gallery/](https://react2svelte.github.io/image-gallery/).
 
-- [x] swipe support using [@react2svelte/swipable](https://www.npmjs.com/package/@react2svelte/swipable)
-- [x] lots of other things
+React image gallery is a React component for building image galleries and carousels
+
+## Features
+
+- [x] Mobile swipe gestures (using [@react2svelte/swipable](https://www.npmjs.com/package/@react2svelte/swipable))
+- [x] Thumbnail navigation
+- [x] Fullscreen support
+- [x] RTL support
+- [x] Responsive design
+- [x] Tons of customization options (see props below)
 - [x] `play`, `pause`, `slide`, `beforeslide`, `screenchange`, `imageload`, `imageerror`, `click` events
 
 Not yet ported
 
-- [ ] custom controls
-- [ ] some events (see below)
+- [ ] Custom rendered slides and controls
+- [ ] Some events (see below)
 
 ## Getting started
 
@@ -176,3 +184,7 @@ Not yet supported
 ## Custom Controls
 
 `react-image-gallery` supports rendering custom controls, this feature has not been ported yet.
+
+## License
+
+MIT
