@@ -247,9 +247,33 @@
     }
   };
 
+  $: _requestFullscreenAPI = (element: HTMLElement) => {
+    if (element.requestFullscreen) {
+      element.requestFullscreen();
+    } else if ((element as any).mozRequestFullScreen) {
+      (element as any).mozRequestFullScreen();
+    } else if ((element as any).webkitRequestFullscreen) {
+      (element as any).webkitRequestFullscreen();
+    } else if ((element as any).msRequestFullscreen) {
+      (element as any).msRequestFullscreen();
+    }
+  };
+
+  $: _exitFullScreenAPI = () => {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if ((document as any).mozCancelFullScreen) {
+      (document as any).mozCancelFullScreen();
+    } else if ((document as any).webkitExitFullscreen) {
+      (document as any).webkitExitFullscreen();
+    } else if ((document as any).msExitFullscreen) {
+      (document as any).msExitFullscreen();
+    }
+  };
+
   $: _fullScreen = () => {
     if (useBrowserFullscreen) {
-      imageGallery.requestFullscreen();
+      _requestFullscreenAPI(imageGallery);
     } else {
       modalFullscreen = true;
     }
@@ -260,7 +284,7 @@
   $: _exitFullScreen = () => {
     if (isFullscreen) {
       if (useBrowserFullscreen) {
-        document.exitFullscreen();
+        _exitFullScreenAPI();
       } else {
         modalFullscreen = false;
       }
