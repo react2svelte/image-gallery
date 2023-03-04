@@ -151,7 +151,7 @@
   $: showItems = items.map((_, index) => {
     const showItem = !lazyLoad || !!alignmentClasses[index] || lazyLoaded[index];
     if (showItem && lazyLoad && !lazyLoaded[index]) {
-      onLazyLoad(index)
+      onLazyLoad(index);
     }
     return showItem;
   });
