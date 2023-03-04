@@ -31,7 +31,6 @@
   export let galleryWidth: number;
   export let indexSeparator: string;
   export let lazyLoad: boolean;
-  export let lazyLoaded: boolean[];
   export let swipeThreshold: number;
   export let flickThreshold: number;
   export let transitionStyle: string; // how should transitions be made? CSS, i.e. 'transform 450ms ease-out'
@@ -46,6 +45,29 @@
   $: canSlideNext = currentIndex < items.length - 1;
   $: canSlideLeft = infinite || (isRTL ? canSlideNext : canSlidePrevious);
   $: canSlideRight = infinite || (isRTL ? canSlidePrevious : canSlideNext);
+
+  let imageLoaded: boolean[] = [];
+  let lazyLoaded: boolean[] = [];
+
+  // reset load flags when items change
+  $: {
+    items = items;
+    lazyLoaded = [];
+    imageLoaded = [];
+  }
+
+  function onLazyLoad(index: number) {
+    lazyLoaded[index] = true;
+  }
+
+  function handleImageLoad(index: number, event: Event) {
+    const imageExists = imageLoaded[index];
+    if (!imageExists) {
+      imageLoaded[index] = true; // prevent from call again
+      // image just loaded, call onImageLoad
+      dispatch('imageload', { index, event });
+    }
+  }
 
   // the element of this wrapper, useful to observe resize changes
   let elem: HTMLElement;
@@ -129,7 +151,7 @@
   $: showItems = items.map((_, index) => {
     const showItem = !lazyLoad || !!alignmentClasses[index] || lazyLoaded[index];
     if (showItem && lazyLoad && !lazyLoaded[index]) {
-      dispatch('lazyload', index);
+      onLazyLoad(index)
     }
     return showItem;
   });
@@ -197,7 +219,7 @@
           showItem={showItems[index]}
           {item}
           isFullscreen={false}
-          on:imageload={(event) => dispatch('imageload', { index, event })}
+          on:imageload={(event) => handleImageLoad(index, event)}
           on:imageerror={(event) => dispatch('imageerror', { index, event })}
           on:click
         />

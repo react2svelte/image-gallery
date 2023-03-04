@@ -80,8 +80,6 @@
   let resizeSlideWrapperObserver: ResizeObserver;
   let resizeThumbnailWrapperObserver: ResizeObserver;
   let thumbnailMouseOverTimer: number | null = null;
-  let lazyLoaded: boolean[] = [];
-  let imageLoaded: boolean[] = [];
 
   /** keep track of mouse vs keyboard usage for a11y */
   let currentlyUsingMouseOrKeyboard: MouseOrKeyboard = 'mouse';
@@ -269,22 +267,6 @@
     }
   };
 
-  $: handleImageLoad = (customEvent: {
-    detail: {
-      index: number;
-      event: Event;
-    };
-  }) => {
-    const index = customEvent.detail.index;
-    const event = customEvent.detail.event;
-    const imageExists = imageLoaded[index];
-    if (!imageExists) {
-      imageLoaded[index] = true; // prevent from call again
-      // image just loaded, call onImageLoad
-      dispatch('imageload', { index, event });
-    }
-  };
-
   $: handleImageError = (customEvent: {
     detail: {
       index: number;
@@ -395,10 +377,6 @@
       }
     }
   };
-
-  $: onLazyLoad = (event: { detail: number }) => {
-    lazyLoaded[event.detail] = true;
-  };
 </script>
 
 <div
@@ -432,7 +410,6 @@
         {stopPropagation}
         {indexSeparator}
         {lazyLoad}
-        {lazyLoaded}
         {swipeThreshold}
         {flickThreshold}
         {transitionStyle}
@@ -445,8 +422,6 @@
         }}
         on:playtoggle={togglePlay}
         on:fullscreentoggle={toggleFullscreen}
-        on:lazyload={onLazyLoad}
-        on:imageload={handleImageLoad}
         on:imageerror={handleImageError}
         on:click
       />
@@ -496,7 +471,6 @@
         {stopPropagation}
         {indexSeparator}
         {lazyLoad}
-        {lazyLoaded}
         {swipeThreshold}
         {flickThreshold}
         {transitionStyle}
@@ -509,8 +483,6 @@
         }}
         on:playtoggle={togglePlay}
         on:fullscreentoggle={toggleFullscreen}
-        on:lazyload={onLazyLoad}
-        on:imageload={handleImageLoad}
         on:imageerror={handleImageError}
         on:click
       />
